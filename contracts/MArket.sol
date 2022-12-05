@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.2;
 
-
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
@@ -12,7 +11,7 @@ import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
 import "./IERC721UUPS.sol";
 import "./IMarket.sol";
 
-contract Market is ERC721Holder,Ownable, IMarket {
+contract Market is ERC721Holder, Ownable, IMarket {
     using SafeMath for uint256;
     using EnumerableSet for EnumerableSet.UintSet;
     using EnumerableMap for EnumerableMap.UintToAddressMap;
@@ -29,38 +28,45 @@ contract Market is ERC721Holder,Ownable, IMarket {
     EnumerableSet.UintSet internal _asksMap;
     mapping(address => EnumerableSet.UintSet) private _userSellingOrder;
 
-    event Buy(address seller,address buyer,address nftAddress, uint256 order_, uint deltaQuantity);
-    event NewOrder(address seller,address nftAddress, uint256 order_,uint _quantity);
-    event CancelOrder(address seller,address nftAddress, uint256 order_);
-    
+    event Buy(
+        address seller,
+        address buyer,
+        address nftAddress,
+        uint256 order_,
+        uint256 deltaQuantity
+    );
+    event NewOrder(
+        address seller,
+        address nftAddress,
+        uint256 order_,
+        uint256 _quantity
+    );
+    event CancelOrder(address seller, address nftAddress, uint256 order_);
 
     constructor(address _token) {
         token = IERC20(_token);
         feeAddr = payable(msg.sender);
-        takerFee=200;
-        makerFee=200;
+        takerFee = 200;
+        makerFee = 200;
     }
 
-    function setMakerFee(uint256 makerFee_) external onlyOwner{
-        makerFee =makerFee_;        
+    function setMakerFee(uint256 makerFee_) external onlyOwner {
+        makerFee = makerFee_;
     }
-    function setTakerFee(uint256 takerFee_) external onlyOwner{
-        takerFee =takerFee_;        
+
+    function setTakerFee(uint256 takerFee_) external onlyOwner {
+        takerFee = takerFee_;
     }
-   
- function buyToken(
-        uint256 _order,        
-        uint256 _quantity
-    ) external payable  {
+
+    function buyToken(uint256 _order, uint256 _quantity) external payable {
         buyTokenTo(_order, _msgSender(), _quantity);
     }
 
     function buyTokenTo(
         uint256 _order,
-        address _to,        
+        address _to,
         uint256 _quantity
     ) internal {
-
         require(_to != address(0) && (_to != address(this)), "Wrong buyer");
         require(_asksMap.contains(_order), "Token not in sell book");
         require(_quantity > 0, "insufficient quantity");
@@ -77,77 +83,93 @@ contract Market is ERC721Holder,Ownable, IMarket {
         }
         price = price.mul(_quantity);
         uint256 feeAmount = price.mul(takerFee).div(PERCENTS_DIVIDER);
-        uint artFee = price.mul(currentNFT.fee()).div(PERCENTS_DIVIDER);
+        uint256 artFee = price.mul(currentNFT.fee()).div(PERCENTS_DIVIDER);
         address artaddress = currentNFT.owner();
         if (!byToken) {
             require(msg.value == price, "invalid pay amount");
             if (feeAmount > 0) {
                 feeAddr.transfer(feeAmount);
-            }                        
+            }
             payable(artaddress).transfer(artFee);
             payable(nft_.owner).transfer(price.sub(feeAmount).sub(artFee));
-        } else {                        
-             if (feeAmount > 0) {
-                 token.transferFrom(_to, feeAddr, feeAmount);             
-             }
-             token.transferFrom(_to, artaddress, artFee);
-             token.transferFrom(_to, nft_.owner, price.sub(feeAmount).sub(artFee));
-        }        
+        } else {
+            if (feeAmount > 0) {
+                token.transferFrom(_to, feeAddr, feeAmount);
+            }
+            token.transferFrom(_to, artaddress, artFee);
+            token.transferFrom(
+                _to,
+                nft_.owner,
+                price.sub(feeAmount).sub(artFee)
+            );
+        }
         uint256 deltaQuantity = quantityOrder.sub(_quantity);
 
-       
-        uint curentIndex = nft_.currentIndex;
-        for(uint i; i < _quantity; i++) {                        
-            currentNFT.safeTransferFrom( address(this), _to, nft_.tokenID[curentIndex.add(i)], "0x");
-        }        
-        nft_.currentIndex =nft_.currentIndex.add(_quantity);        
+        uint256 curentIndex = nft_.currentIndex;
+        for (uint256 i; i < _quantity; i++) {
+            currentNFT.safeTransferFrom(
+                address(this),
+                _to,
+                nft_.tokenID[curentIndex.add(i)],
+                "0x"
+            );
+        }
+        nft_.currentIndex = nft_.currentIndex.add(_quantity);
         if (deltaQuantity == 0) {
             _asksMap.remove(_order);
-            nft_.quantity = deltaQuantity;            
+            nft_.quantity = deltaQuantity;
             _userSellingOrder[nft_.owner].remove(_order);
             delete _tokenSellers[_order];
         } else {
-            nft_.quantity = deltaQuantity;            
-            }     
-        uint orderNumber=_order;   
-        emit Buy( nft_.owner,msg.sender,nft_.NFTAddress, orderNumber, deltaQuantity);
-      
-    
+            nft_.quantity = deltaQuantity;
+        }
+        uint256 orderNumber = _order;
+        emit Buy(
+            nft_.owner,
+            msg.sender,
+            nft_.NFTAddress,
+            orderNumber,
+            deltaQuantity
+        );
     }
 
-function cancelSellToken(uint256 _order) external  {
+    function cancelSellToken(uint256 _order) external {
         require(
             _userSellingOrder[_msgSender()].contains(_order),
             "Only Seller can cancel sell token"
         );
-        Order storage order_ = _tokenSellers[_order];       
-        
-         IERC721 currentNFT = IERC721(order_.NFTAddress);
-        for(uint i = order_.currentIndex; i < order_.tokenID.length; i++) {
-            currentNFT.safeTransferFrom( address(this), order_.owner, order_.tokenID[i], "0x");
-        }                
+        Order storage order_ = _tokenSellers[_order];
+
+        IERC721 currentNFT = IERC721(order_.NFTAddress);
+        for (uint256 i = order_.currentIndex; i < order_.tokenID.length; i++) {
+            currentNFT.safeTransferFrom(
+                address(this),
+                order_.owner,
+                order_.tokenID[i],
+                "0x"
+            );
+        }
         _asksMap.remove(_order);
         _userSellingOrder[_msgSender()].remove(_order);
-        emit CancelOrder(msg.sender,order_.NFTAddress, _order);
-        delete _tokenSellers[_order];                
-        
+        emit CancelOrder(msg.sender, order_.NFTAddress, _order);
+        delete _tokenSellers[_order];
     }
 
-
-function readyToSellToken(
-         uint256[] memory _tokenIds,
+    function readyToSellToken(
+        uint256[] memory _tokenIds,
         uint256 _quantity,
         uint256 ethPrice,
-        uint256 _prices,        
+        uint256 _prices,
         address nft
     ) public {
         readyToSellTokenTo(
-        _tokenIds,
-        _quantity,
-        ethPrice,
-        _prices,
-        msg.sender,
-        nft);
+            _tokenIds,
+            _quantity,
+            ethPrice,
+            _prices,
+            msg.sender,
+            nft
+        );
     }
 
     function readyToSellTokenTo(
@@ -166,7 +188,7 @@ function readyToSellToken(
         } else {
             require(_prices > 0, "Price must be granter than zero");
         }
-/*
+        /*
         bool hasPriorityToken = nft_.tokenPrices > 0;
         bool hasEthPrice = ethPrice > 0;
         
@@ -195,22 +217,28 @@ function readyToSellToken(
             order,
             _from,
             nft
-            
         );
-        
-        
-        for(uint i; i < _quantity; i++) {
-            require(currentNFT.ownerOf(_tokenIds[i]) == _from,"Only Token Owner can sell token");                    
-            currentNFT.safeTransferFrom(_from, address(this), _tokenIds[i], "0x");        
+
+        for (uint256 i; i < _quantity; i++) {
+            require(
+                currentNFT.ownerOf(_tokenIds[i]) == _from,
+                "Only Token Owner can sell token"
+            );
+            currentNFT.safeTransferFrom(
+                _from,
+                address(this),
+                _tokenIds[i],
+                "0x"
+            );
         }
-        emit NewOrder(_from,nft,order,_quantity);        
+        emit NewOrder(_from, nft, order, _quantity);
     }
 
     function createOrderHandle(
         Order storage nft_,
-        uint256[] memory  _tokenId,
-        uint _quantity,
-        uint currentIndex,
+        uint256[] memory _tokenId,
+        uint256 _quantity,
+        uint256 currentIndex,
         uint256 ethPrice,
         uint256 _prices,
         uint256 _order,
@@ -218,23 +246,23 @@ function readyToSellToken(
         address nft
     ) internal {
         _asksMap.add(order);
-        nft_.owner = _from;        
-        nft_.quantity =_quantity;
+        nft_.owner = _from;
+        nft_.quantity = _quantity;
         nft_.tokenID = _tokenId;
         nft_.currentIndex = currentIndex;
         nft_.ethPrice = ethPrice;
         nft_.NFTAddress = nft;
         nft_.tokenPrices = _prices;
-        nft_.orderId =_order;
+        nft_.orderId = _order;
         _userSellingOrder[_from].add(order);
-        AllOrder_[_order]=nft_;
+        AllOrder_[_order] = nft_;
     }
 
-     function getAskLength() public view returns (uint256) {
+    function getAskLength() public view returns (uint256) {
         return _asksMap.length();
     }
 
-function getAsks() external view returns (Order[] memory ) {
+    function getAsks() external view returns (Order[] memory) {
         Order[] memory asks = new Order[](_asksMap.length());
 
         for (uint256 i; i < _asksMap.length(); i++) {
@@ -244,31 +272,33 @@ function getAsks() external view returns (Order[] memory ) {
         return asks;
     }
 
-function getAsksByUser(address user)
+    function getAsksByUser(address user)
         external
         view
         returns (Order[] memory)
     {
-        Order[] memory asks =
-            new Order[](_userSellingOrder[user].length());
+        Order[] memory asks = new Order[](_userSellingOrder[user].length());
 
         for (uint256 i; i < _userSellingOrder[user].length(); i++) {
             uint256 orderNum = _userSellingOrder[user].at(i);
-            asks[i] =_tokenSellers[orderNum];
+            asks[i] = _tokenSellers[orderNum];
         }
         return asks;
     }
-function getOrder(uint256 _order) external view returns (Order memory) {
+
+    function getOrder(uint256 _order) external view returns (Order memory) {
         Order memory order_ = _tokenSellers[_order];
-        if (order_.quantity == 0)        
-            return order_;
+        if (order_.quantity == 0) return order_;
         return order_;
     }
 
-    function getOrderByIndex(uint256 _index) external view returns (Order memory) {
+    function getOrderByIndex(uint256 _index)
+        external
+        view
+        returns (Order memory)
+    {
         uint256 orderNum = _asksMap.at(_index);
         Order memory order_ = _tokenSellers[orderNum];
         return order_;
     }
-
 }

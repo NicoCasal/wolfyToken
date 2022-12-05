@@ -33,30 +33,31 @@ describe("MArket", function () {
       });
     });
     it.only("token listado", async function () {
-      await cnt.ercuups721
+      //Transfer erc20 tokens to seller
+      await cnt.erc20.connect(wllt.owner).transfer(wllt.buyer.address, 1000000);
+      await cnt.erc20
         .connect(wllt.owner)
-        .safeMint(wllt.seller.address, "wolfy");
-      console.log("paso por aca pibe");
-      console.log("supply", await cnt.Market.getAsks());
-      console.log("supply", await cnt.Market.getOrder(1));
-      await cnt.ercuups721.connect(wllt.seller).approve(cnt.Market.address, 1);
-      console.log("por aca ya paso");
+        .transfer(wllt.seller.address, 1000000);
+
+      //Approve contracts to move erc20
+      await cnt.erc20.connect(wllt.owner).approve(cnt.Market.address, 1000);
+      await cnt.erc20.connect(wllt.buyer).approve(cnt.Market.address, 1000);
+      await cnt.erc20.connect(wllt.seller).approve(cnt.Market.address, 1000);
+
+      await cnt.ercuups721.connect(wllt.owner).safeMint(wllt.seller.address, 1);
+
+      await cnt.ercuups721.connect(wllt.seller).approve(cnt.Market.address, 2);
+
       await cnt.Market.connect(wllt.seller).readyToSellToken(
-        [1],
+        [2],
         1,
         1,
-        //ethers.utils.parseEther("1"),
         1,
         cnt.ercuups721.address
       );
-      console.log("NFT adress", cnt.ercuups721.address);
-      console.log("supply", await cnt.Market.getOrder(1));
-      console.log("paso por aca");
-      // await time.increase(61 * 60 * 60);
-      console.log("supply", await cnt.Market.getAsks());
-      await expect(
-        cnt.Market.connect(wllt.owner).buyToken(1, 1)
-      ).to.be.revertedWith("djsgjs");
+
+      await expect(cnt.Market.connect(wllt.buyer).buyToken(1, 1)).to.not
+        .reverted;
     });
   });
   describe("intento de compra", function () {
