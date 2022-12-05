@@ -6,6 +6,7 @@ import "@nomiclabs/hardhat-waffle";
 import "@typechain/hardhat";
 import "hardhat-gas-reporter";
 import "solidity-coverage";
+import "@openzeppelin/hardhat-upgrades";
 require("@nomiclabs/hardhat-waffle");
 require("dotenv").config();
 require("solidity-coverage");
@@ -47,6 +48,9 @@ const config: HardhatUserConfig = {
 
 export default config;
 */
+module.exports = {
+  defaultNetwork: "hardhat",
+};
 module.exports = {
   solidity: "0.8.4",
   networks: {

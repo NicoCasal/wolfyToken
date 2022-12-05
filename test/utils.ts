@@ -8,6 +8,8 @@
 
 import { time } from "@openzeppelin/test-helpers";
 import { ethers } from "hardhat";
+import "@openzeppelin/hardhat-upgrades";
+require("@openzeppelin/hardhat-upgrades");
 
 export async function setupAddresses() {
   const [owner, seller, buyer] = await ethers.getSigners();
@@ -23,16 +25,22 @@ export async function setupAddresses() {
 }
 
 export async function setupEnvironment(owner) {
-  const ERC721 = await ethers.getContractFactory("NFT_BASE");
-  const erc721 = await ERC721.connect(owner).deploy();
-  await erc721.deployed();
+  const { ethers, upgrades } = require("hardhat");
+
+  const ERC721UUPS = await ethers.getContractFactory("ERC721UUPS");
+  const ercuups721 = await upgrades.deployProxy(ERC721UUPS, [
+    "wolfy",
+    "WOL",
+    "pepito",
+    1,
+    200,
+    owner.address,
+  ]);
+  await ercuups721.deployed();
 
   const MArket = await ethers.getContractFactory("Market");
-  const Market = await MArket.connect(owner).deploy(erc721.address);
+  const Market = await MArket.connect(owner).deploy(ercuups721.address);
   await Market.deployed();
-  await erc721
-    .connect(owner)
-    .initialize("wolfy", "WOL", owner.address, 1, Market.address);
 
   const ERC20 = await ethers.getContractFactory("MyToken2");
   const erc20 = await ERC20.connect(owner).deploy();
@@ -43,7 +51,7 @@ export async function setupEnvironment(owner) {
   await auctionv2.deployed();
 
   return {
-    erc721,
+    ercuups721,
     Market,
     erc20,
     auctionv2,
