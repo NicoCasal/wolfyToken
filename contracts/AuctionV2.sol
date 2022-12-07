@@ -282,7 +282,7 @@ contract AuctionV2 is ERC721Holder, Ownable, Pausable, IMarket {
     activeAuctions.remove(_order);
   }
 
-  function removeBit(uint256 _order) external {
+  function removeBid(uint256 _order) external {
     require(auctionIsActive(_order), "Auction is not active");
     Auction storage auction = auctions[_order];
     require(auction.bestBidder == msg.sender, "You can't remove this offer");

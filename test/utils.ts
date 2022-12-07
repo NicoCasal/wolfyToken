@@ -24,6 +24,41 @@ export async function setupAddresses() {
   };
 }
 
+export async function minteado(
+  owner,
+  buyer,
+  seller,
+  erc20,
+  ercuups721,
+  Market
+) {
+  await erc20.connect(owner).transfer(buyer.address, 1000000);
+  await erc20.connect(owner).transfer(seller.address, 1000000);
+  await erc20.connect(owner).approve(Market.address, 1000);
+  await erc20.connect(buyer).approve(Market.address, 1000);
+  await erc20.connect(seller).approve(Market.address, 1000);
+
+  await ercuups721.connect(owner).safeMint(seller.address, 1);
+
+  await ercuups721.connect(seller).approve(Market.address, 2);
+}
+export async function minteadoAlAuction(
+  owner,
+  buyer,
+  seller,
+  erc20,
+  ercuups721,
+  auctionv2
+) {
+  await erc20.connect(owner).transfer(buyer.address, 1000000);
+  await erc20.connect(owner).transfer(seller.address, 1000000);
+  await erc20.connect(owner).approve(auctionv2.address, 1000);
+  await erc20.connect(buyer).approve(auctionv2.address, 1000);
+  await erc20.connect(seller).approve(auctionv2.address, 1000);
+  await ercuups721.connect(owner).safeMint(seller.address, 1);
+  await ercuups721.connect(seller).approve(auctionv2.address, 2);
+}
+
 export async function setupEnvironment(owner) {
   const { ethers, upgrades } = require("hardhat");
 
@@ -61,4 +96,6 @@ export async function setupEnvironment(owner) {
 module.exports = {
   setupAddresses,
   setupEnvironment,
+  minteado,
+  minteadoAlAuction,
 };

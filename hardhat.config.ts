@@ -10,6 +10,7 @@ import "@openzeppelin/hardhat-upgrades";
 require("@nomiclabs/hardhat-waffle");
 require("dotenv").config();
 require("solidity-coverage");
+require("@nomiclabs/hardhat-waffle");
 
 module.exports = {
   solidity: "0.8.4",
