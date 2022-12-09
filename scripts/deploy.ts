@@ -1,4 +1,15 @@
 const { ethers, upgrades } = require("hardhat");
+
+const ERC721_NAME = "MyERC721";
+const ERC721_SYMBOL = "ERC721";
+
+const ERC721UUPS_NAME = "MyERC721UUPS";
+const ERC721UUPS_SYMBOL = "ERC721U";
+const ERC721UUPS_URI = "ipfs://uri";
+const ERC721UUPS_AMOUNT = 1;
+const ERC721UUPS_FEE = 1;
+const ERC721UUPS_ADMIN = "0xc321a621be6f429747b245fddc6859ee84271606";
+
 async function main() {
   // DEPLOY ERC20
   const ERC20 = await ethers.getContractFactory("MyToken2");
@@ -7,11 +18,10 @@ async function main() {
   await erc20.deployed();
 
   console.log("ERC20 deployed to:", erc20.address);
-  //address "0x3ab007bf80819D606BED310EDfa283732C531ba0"
 
   //DEPLOY ERC721
   const ERC721 = await ethers.getContractFactory("ERC721");
-  const erc721 = await ERC721.deploy("ARG", "AR");
+  const erc721 = await ERC721.deploy(ERC721_NAME, ERC721_SYMBOL);
 
   await erc721.deployed();
 
@@ -27,12 +37,12 @@ async function main() {
 
   const ERC721UUPS = await ethers.getContractFactory("ERC721UUPS");
   const ercuups721 = await upgrades.deployProxy(ERC721UUPS, [
-    "wolfy",
-    "WOL",
-    "pepito",
-    1,
-    1,
-    "0xc321a621be6f429747b245fddc6859ee84271606",
+    ERC721UUPS_NAME,
+    ERC721UUPS_SYMBOL,
+    ERC721UUPS_URI,
+    ERC721UUPS_AMOUNT,
+    ERC721UUPS_FEE,
+    ERC721UUPS_ADMIN,
   ]);
 
   await ercuups721.deployed();
