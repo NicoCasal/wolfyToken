@@ -53,8 +53,11 @@ contract ERC721UUPS is
         uint256 amount,
         string memory uri
     ) internal {
-        for (uint256 i = 0; i < amount; i++) {
+        for (uint256 i = 0; i < amount; ) {
             safeMint(to, uri);
+            unchecked {
+                i++;
+            }
         }
     }
 
@@ -123,8 +126,11 @@ contract ERC721UUPS is
     {
         uint256 length = balanceOf(owner);
         uint256[] memory tokens = new uint256[](length);
-        for (uint256 i; i < length; i++) {
+        for (uint256 i; i < length; ) {
             tokens[i] = tokenOfOwnerByIndex(owner, i);
+            unchecked {
+                i++;
+            }
         }
         return tokens;
     }
