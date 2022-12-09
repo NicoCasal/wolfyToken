@@ -1966,10 +1966,10 @@ contract Market is ERC721Holder, Ownable, IMarket {
     }
 
     function buyToken(uint256 _order, uint256 _quantity) external payable {
-        buyTokenTo(_order, _msgSender(), _quantity);
+        _buyTokenTo(_order, _msgSender(), _quantity);
     }
 
-    function buyTokenTo(
+    function _buyTokenTo(
         uint256 _order,
         address _to,
         uint256 _quantity
@@ -2069,7 +2069,7 @@ contract Market is ERC721Holder, Ownable, IMarket {
         uint256 _prices,
         address nft
     ) public {
-        readyToSellTokenTo(
+        _readyToSellTokenTo(
             _tokenIds,
             _quantity,
             ethPrice,
@@ -2079,7 +2079,7 @@ contract Market is ERC721Holder, Ownable, IMarket {
         );
     }
 
-    function readyToSellTokenTo(
+    function _readyToSellTokenTo(
         uint256[] memory _tokenIds,
         uint256 _quantity,
         uint256 ethPrice,
@@ -2114,7 +2114,7 @@ contract Market is ERC721Holder, Ownable, IMarket {
             token.transferFrom(_from, feeAddr, feeAmt);
         }
         */
-        createOrderHandle(
+        _createOrderHandle(
             nft_,
             _tokenIds,
             _quantity,
@@ -2141,7 +2141,7 @@ contract Market is ERC721Holder, Ownable, IMarket {
         emit NewOrder(_from, nft, order, _quantity);
     }
 
-    function createOrderHandle(
+    function _createOrderHandle(
         Order storage nft_,
         uint256[] memory _tokenId,
         uint256 _quantity,

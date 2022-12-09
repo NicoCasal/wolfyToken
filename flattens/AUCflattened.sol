@@ -2963,7 +2963,7 @@ contract AuctionV2 is ERC721Holder, Ownable, Pausable, IMarket {
         emit FeeAddressTransferred(_msgSender(), feeAddr);
     }
 
-    function createAuction(
+    function _createAuction(
         address nft,
         uint256[] memory _tokenId,
         uint256 _price,
@@ -3004,7 +3004,7 @@ contract AuctionV2 is ERC721Holder, Ownable, Pausable, IMarket {
         }
     }
 
-    function createAuctionSingle(
+    function _createAuctionSingle(
         address nft,
         uint256[] memory _tokenId,
         uint256 _price,
@@ -3019,16 +3019,16 @@ contract AuctionV2 is ERC721Holder, Ownable, Pausable, IMarket {
             _duration <= MAXIMAL_DURATION,
             "Duration must be less than MAXIMAL_DURATION"
         );
-        createAuction(nft, _tokenId, _price, _duration, _byToken, false);
+        _createAuction(nft, _tokenId, _price, _duration, _byToken, false);
     }
 
-    function createAuctionTimeLong(
+    function _createAuctionTimeLong(
         address nft,
         uint256[] memory _tokenId,
         uint256 _price,
         bool _byToken
     ) external {
-        createAuction(nft, _tokenId, _price, 0, _byToken, true);
+        _createAuction(nft, _tokenId, _price, 0, _byToken, true);
     }
 
     function bid(uint256 _order, uint256 _tokenAmount) external payable {
@@ -3095,7 +3095,7 @@ contract AuctionV2 is ERC721Holder, Ownable, Pausable, IMarket {
                 "0x"
             );
             _userBuyingAuction[auction.bestBidder].remove(_order);
-            payFees(auction.seller, auction.currentPrice, 0, auction.byToken);
+            _payFees(auction.seller, auction.currentPrice, 0, auction.byToken);
         }
         auction.finish = true;
         _userSellingAuction[auction.seller].remove(_order);
@@ -3128,12 +3128,17 @@ contract AuctionV2 is ERC721Holder, Ownable, Pausable, IMarket {
             "0x"
         );
 
-        uint256 artFees = payArtFees(
+        uint256 artFees = _payArtFees(
             auction.NFTAddress,
             auction.currentPrice,
             auction.byToken
         );
-        payFees(auction.seller, auction.currentPrice, artFees, auction.byToken);
+        _payFees(
+            auction.seller,
+            auction.currentPrice,
+            artFees,
+            auction.byToken
+        );
         _userBuyingAuction[auction.bestBidder].remove(_order);
         _userSellingAuction[auction.seller].remove(_order);
         activeAuctions.remove(_order);
@@ -3216,7 +3221,7 @@ contract AuctionV2 is ERC721Holder, Ownable, Pausable, IMarket {
         return auction._isInfinity;
     }
 
-    function payFees(
+    function _payFees(
         address receiver,
         uint256 _amount,
         uint256 _artFees,
@@ -3234,7 +3239,7 @@ contract AuctionV2 is ERC721Holder, Ownable, Pausable, IMarket {
         }
     }
 
-    function payArtFees(
+    function _payArtFees(
         address nftAddress,
         uint256 _amount,
         bool byToken

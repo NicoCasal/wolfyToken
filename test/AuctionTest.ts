@@ -59,14 +59,14 @@ describe("AuctionV2", function () {
         await expect(
           cnt.auctionv2
             .connect(wllt.seller)
-            .createAuctionSingle(cnt.ercuups721.address, [2], 10, 30, true)
+            ._createAuctionSingle(cnt.ercuups721.address, [2], 10, 30, true)
         ).to.be.revertedWith("Must be over MINIMUM_DURATION");
       });
       it("should create auction if over minimum duration", async function () {
         await expect(
           cnt.auctionv2
             .connect(wllt.seller)
-            .createAuctionSingle(cnt.ercuups721.address, [2], 10, 60, true)
+            ._createAuctionSingle(cnt.ercuups721.address, [2], 10, 60, true)
         ).to.not.be.reverted;
       });
     });
@@ -74,14 +74,14 @@ describe("AuctionV2", function () {
       await expect(
         cnt.auctionv2
           .connect(wllt.seller)
-          .createAuctionSingle(cnt.ercuups721.address, [2], 10, 700, true)
+          ._createAuctionSingle(cnt.ercuups721.address, [2], 10, 700, true)
       ).to.be.revertedWith("Must be under MAXIMUM_DURATION");
     });
     it("should not revert if under maximum duration", async function () {
       await expect(
         cnt.auctionv2
           .connect(wllt.seller)
-          .createAuctionSingle(cnt.ercuups721.address, [2], 1, 500, true)
+          ._createAuctionSingle(cnt.ercuups721.address, [2], 1, 500, true)
       ).to.not.be.reverted;
     });
     describe("Bidding", function () {
@@ -94,7 +94,7 @@ describe("AuctionV2", function () {
         it("should accept bid on active auction", async function () {
           await cnt.auctionv2
             .connect(wllt.seller)
-            .createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
+            ._createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
 
           await expect(cnt.auctionv2.connect(wllt.buyer).bid(1, 10)).to.not.be
             .reverted;
@@ -102,7 +102,7 @@ describe("AuctionV2", function () {
         it("should revert if bidding on own auction", async function () {
           await cnt.auctionv2
             .connect(wllt.seller)
-            .createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
+            ._createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
 
           const newOrder = await cnt.auctionv2.currentOrder();
 
@@ -115,7 +115,7 @@ describe("AuctionV2", function () {
         it("should revert if auction is over", async function () {
           await cnt.auctionv2
             .connect(wllt.seller)
-            .createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
+            ._createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
 
           const newOrder = await cnt.auctionv2.currentOrder();
           const OrderId = await cnt.auctionv2.getAllAuctionsID();
@@ -128,7 +128,7 @@ describe("AuctionV2", function () {
         it("should not revert if auction is active", async function () {
           await cnt.auctionv2
             .connect(wllt.seller)
-            .createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
+            ._createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
 
           const newOrder = await cnt.auctionv2.currentOrder();
 
@@ -146,7 +146,7 @@ describe("AuctionV2", function () {
             .approve(cnt.auctionv2.address, 3);
           await cnt.auctionv2
             .connect(wllt.seller)
-            .createAuctionSingle(cnt.ercuups721.address, [2, 3], 1, 60, true);
+            ._createAuctionSingle(cnt.ercuups721.address, [2, 3], 1, 60, true);
           const newOrder = await cnt.auctionv2.currentOrder();
 
           await expect(
@@ -156,7 +156,7 @@ describe("AuctionV2", function () {
         it("should accept bid on started auction", async function () {
           await cnt.auctionv2
             .connect(wllt.seller)
-            .createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
+            ._createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
 
           const newOrder = await cnt.auctionv2.currentOrder();
           await expect(cnt.auctionv2.connect(wllt.buyer).bid(newOrder, 2)).to
@@ -167,7 +167,7 @@ describe("AuctionV2", function () {
         it("should not revert if bid is higher", async function () {
           await cnt.auctionv2
             .connect(wllt.seller)
-            .createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
+            ._createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
 
           const newOrder = await cnt.auctionv2.currentOrder();
 
@@ -178,7 +178,7 @@ describe("AuctionV2", function () {
         it("should revert if bid is lower", async function () {
           await cnt.auctionv2
             .connect(wllt.seller)
-            .createAuctionSingle(cnt.ercuups721.address, [2], 3, 60, true);
+            ._createAuctionSingle(cnt.ercuups721.address, [2], 3, 60, true);
 
           const newOrder = await cnt.auctionv2.currentOrder();
 
@@ -189,7 +189,7 @@ describe("AuctionV2", function () {
         it("should revert if bid is the same", async function () {
           await cnt.auctionv2
             .connect(wllt.seller)
-            .createAuctionSingle(cnt.ercuups721.address, [2], 3, 60, true);
+            ._createAuctionSingle(cnt.ercuups721.address, [2], 3, 60, true);
 
           const newOrder = await cnt.auctionv2.currentOrder();
 
@@ -202,7 +202,7 @@ describe("AuctionV2", function () {
         it("should accept offer", async function () {
           await cnt.auctionv2
             .connect(wllt.seller)
-            .createAuctionSingle(cnt.ercuups721.address, [2], 1, 61, true);
+            ._createAuctionSingle(cnt.ercuups721.address, [2], 1, 61, true);
 
           const newOrder = await cnt.auctionv2.currentOrder();
           await cnt.auctionv2.connect(wllt.buyer).bid(newOrder, 5);
@@ -222,7 +222,7 @@ describe("AuctionV2", function () {
         it("should not revert if auction is active", async function () {
           await cnt.auctionv2
             .connect(wllt.seller)
-            .createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
+            ._createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
           const newOrder = await cnt.auctionv2.currentOrder();
           await time.increase(61 * 60 * 60);
 
@@ -233,7 +233,7 @@ describe("AuctionV2", function () {
         it("should finish auction with no bids", async function () {
           await cnt.auctionv2
             .connect(wllt.seller)
-            .createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
+            ._createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
 
           const newOrder = await cnt.auctionv2.currentOrder();
 
@@ -246,7 +246,7 @@ describe("AuctionV2", function () {
         it("should finish auction with more than one bid", async function () {
           await cnt.auctionv2
             .connect(wllt.seller)
-            .createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
+            ._createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
 
           const newOrder = await cnt.auctionv2.currentOrder();
 
@@ -261,7 +261,7 @@ describe("AuctionV2", function () {
         it("should revert if auction duration has not finished", async function () {
           await cnt.auctionv2
             .connect(wllt.seller)
-            .createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
+            ._createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
 
           const newOrder = await cnt.auctionv2.currentOrder();
 
@@ -273,7 +273,7 @@ describe("AuctionV2", function () {
         it("should revert if auction does not exist", async function () {
           await cnt.auctionv2
             .connect(wllt.seller)
-            .createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
+            ._createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
 
           const newOrder = await cnt.auctionv2.currentOrder();
           await expect(
@@ -285,7 +285,7 @@ describe("AuctionV2", function () {
         it("should remove offer", async function () {
           await cnt.auctionv2
             .connect(wllt.seller)
-            .createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
+            ._createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
 
           const newOrder = await cnt.auctionv2.currentOrder();
 
@@ -295,7 +295,7 @@ describe("AuctionV2", function () {
         it("should remove best bid", async function () {
           await cnt.auctionv2
             .connect(wllt.seller)
-            .createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
+            ._createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
 
           const newOrder = await cnt.auctionv2.currentOrder();
           await cnt.auctionv2.connect(wllt.buyer).bid(newOrder, 5);
@@ -311,7 +311,7 @@ describe("AuctionV2", function () {
         it("should accept non-token bid", async function () {
           await cnt.auctionv2
             .connect(wllt.seller)
-            .createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, false);
+            ._createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, false);
 
           const newOrder = await cnt.auctionv2.currentOrder();
           await cnt.auctionv2
@@ -329,14 +329,14 @@ describe("AuctionV2", function () {
         await expect(
           cnt.auctionv2
             .connect(wllt.seller)
-            .createAuctionTimeLong(cnt.ercuups721.address, [2], 1, true)
+            ._createAuctionTimeLong(cnt.ercuups721.address, [2], 1, true)
         ).to.not.reverted;
       });
       describe("Bidding", function () {
         it("should accept bid", async function () {
           await cnt.auctionv2
             .connect(wllt.seller)
-            .createAuctionTimeLong(cnt.ercuups721.address, [2], 1, true);
+            ._createAuctionTimeLong(cnt.ercuups721.address, [2], 1, true);
 
           const newOrder = await cnt.auctionv2.currentOrder();
           await cnt.auctionv2.connect(wllt.buyer).bid(newOrder, 5);
