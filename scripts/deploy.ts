@@ -1,9 +1,8 @@
-import { ethers } from "hardhat";
-
+const { ethers, upgrades } = require("hardhat");
 async function main() {
   // DEPLOY ERC20
-  const ERC20 = await ethers.getContractFactory("ERC20");
-  const erc20 = await ERC20.deploy("ARG", "AR");
+  const ERC20 = await ethers.getContractFactory("MyToken2");
+  const erc20 = await ERC20.deploy();
 
   await erc20.deployed();
 
@@ -24,24 +23,29 @@ async function main() {
 
   await auctionv2.deployed();
 
-  console.log("auctionv2 deployed to:", auctionv2.address);
-  [0x6615a34f73520d0c7ad94fed6e0396423b1edf2b];
+  console.log("Auctionv2 deployed to:", auctionv2.address);
 
+  const ERC721UUPS = await ethers.getContractFactory("ERC721UUPS");
+  const ercuups721 = await upgrades.deployProxy(ERC721UUPS, [
+    "wolfy",
+    "WOL",
+    "pepito",
+    1,
+    1,
+    "0xc321a621be6f429747b245fddc6859ee84271606",
+  ]);
+
+  await ercuups721.deployed();
+
+  console.log("ERC721UUPS deployed to:", ercuups721.address);
+  await ercuups721.deployed();
   //DEPLOY MARKET
-  const Market = await ethers.getContractFactory("Market");
-  const market = await Market.deploy(erc20.address);
+  const MArket = await ethers.getContractFactory("Market");
+  const market = await MArket.deploy(ercuups721.address);
 
   await market.deployed();
 
   console.log("market deployed to:", market.address);
-
-  //DEPLOY ERC721UUPS
-  const ERC721UUPS = await ethers.getContractFactory("ERC721UUPS");
-  const ERC721u = await ERC721UUPS.deploy();
-
-  await ERC721u.deployed();
-
-  console.log("ERC721UUPS deployed to:", ERC721u.address);
 
   //DEPLOY clone
   const clone = await ethers.getContractFactory("NFTFactory");
