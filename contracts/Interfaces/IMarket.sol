@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.2;
 
-interface IMarket{
-    
- struct TokenPrice {
+interface IMarket {
+    struct TokenPrice {
         string symbol;
         uint256 price;
     }
@@ -23,7 +22,7 @@ interface IMarket{
         uint256 quantity;
         address NFTAddress;
         uint256[] tokenID;
-        uint currentIndex;
+        uint256 currentIndex;
         uint256 ethPrice;
         uint256 tokenPrices;
         uint256 orderId;
@@ -32,28 +31,27 @@ interface IMarket{
     struct Auction {
         address NFTAddress;
         uint256 tokenId;
-        uint startTime;
-        uint endTime;
-        uint initPrice;
-        uint currentPrice;
+        uint256 startTime;
+        uint256 endTime;
+        uint256 initPrice;
+        uint256 currentPrice;
         bool byToken;
         address bestBidder;
         address seller;
-        uint orderId;
+        uint256 orderId;
         bool _isInfinity;
         bool finish;
-        
     }
 
     event Ask(
         address seller,
         uint256 order,
-        address NFTAddress,        
+        address NFTAddress,
         uint256 ethPrice,
         TokenPrice[] indexed tokenPrices,
-		uint256 fee
+        uint256 fee
     );
-  event Trade(
+    event Trade(
         address indexed seller,
         address indexed buyer,
         uint256 tokenId,
@@ -69,16 +67,22 @@ interface IMarket{
         address indexed newOwner
     );
 
-	event SetMakerFeePercent(address indexed setBy, uint256 oldFeePercent, uint256 newFeePercent);
+    event SetMakerFeePercent(
+        address indexed setBy,
+        uint256 oldFeePercent,
+        uint256 newFeePercent
+    );
 
-    event SetTakerFeeFeePercent(address indexed setBy, uint256 oldFeePercent, uint256 newFeePercent);
+    event SetTakerFeeFeePercent(
+        address indexed setBy,
+        uint256 oldFeePercent,
+        uint256 newFeePercent
+    );
 
     event setPrices(
         address indexed seller,
         uint256 indexed order,
         uint256 ethPrice,
         TokenPrice[] indexed tokenPrices
-    );   
-    
-
+    );
 }

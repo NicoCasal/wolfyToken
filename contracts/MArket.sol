@@ -8,20 +8,22 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableMap.sol";
 import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
-import "./IERC721UUPS.sol";
-import "./IMarket.sol";
+import "./Interfaces/IERC721UUPS.sol";
+import "./Interfaces/IMarket.sol";
 
 contract Market is ERC721Holder, Ownable, IMarket {
     using SafeMath for uint256;
     using EnumerableSet for EnumerableSet.UintSet;
     using EnumerableMap for EnumerableMap.UintToAddressMap;
+
     uint256 private order;
-    address payable public feeAddr;
     // a fee of 1 equals 0.1%, 10 to 1%, 100 to 10%, 1000 to 100%
-    uint256 public makerFee;
-    uint256 public takerFee;
-    uint256 public constant PERCENTS_DIVIDER = 1000;
+    uint16 public makerFee;
+    uint16 public takerFee;
+    uint16 public constant PERCENTS_DIVIDER = 1000;
+
     IERC20 token;
+    address payable public feeAddr;
 
     mapping(uint256 => Order) private _tokenSellers;
     mapping(uint256 => Order) private AllOrder_;
@@ -50,11 +52,11 @@ contract Market is ERC721Holder, Ownable, IMarket {
         makerFee = 200;
     }
 
-    function setMakerFee(uint256 makerFee_) external onlyOwner {
+    function setMakerFee(uint16 makerFee_) external onlyOwner {
         makerFee = makerFee_;
     }
 
-    function setTakerFee(uint256 takerFee_) external onlyOwner {
+    function setTakerFee(uint16 takerFee_) external onlyOwner {
         takerFee = takerFee_;
     }
 
@@ -69,16 +71,16 @@ contract Market is ERC721Holder, Ownable, IMarket {
     ) internal {
         require(_to != address(0) && (_to != address(this)), "Wrong buyer");
         require(_asksMap.contains(_order), "Token not in sell book");
-        require(_quantity > 0, "insufficient quantity");
+        require(_quantity > 0, "Insufficient quantity");
         Order storage nft_ = _tokenSellers[_order];
         IERC721UUPS currentNFT = IERC721UUPS(nft_.NFTAddress);
         uint256 quantityOrder = nft_.quantity;
-        require(quantityOrder >= _quantity, "excessive quantity");
+        require(quantityOrder >= _quantity, "Excessive quantity");
         uint256 price = nft_.tokenPrices;
         bool byToken = true;
         if (price == 0) {
             price = nft_.ethPrice;
-            require(price > 0, "token no valid");
+            require(price > 0, "Token not valid");
             byToken = false;
         }
         price = price.mul(_quantity);
@@ -86,7 +88,7 @@ contract Market is ERC721Holder, Ownable, IMarket {
         uint256 artFee = price.mul(currentNFT.fee()).div(PERCENTS_DIVIDER);
         address artaddress = currentNFT.owner();
         if (!byToken) {
-            require(msg.value == price, "invalid pay amount");
+            require(msg.value == price, "Invalid pay amount");
             if (feeAmount > 0) {
                 feeAddr.transfer(feeAmount);
             }
@@ -136,7 +138,7 @@ contract Market is ERC721Holder, Ownable, IMarket {
     function cancelSellToken(uint256 _order) external {
         require(
             _userSellingOrder[_msgSender()].contains(_order),
-            "Only Seller can cancel sell token"
+            "Only Seller can cancel sale"
         );
         Order storage order_ = _tokenSellers[_order];
 
@@ -184,29 +186,11 @@ contract Market is ERC721Holder, Ownable, IMarket {
         order++;
         Order storage nft_ = _tokenSellers[order];
         if (_prices == 0) {
-            require(ethPrice > 0, "Price must be granter than zero");
+            require(ethPrice > 0, "Price must be geater than zero");
         } else {
-            require(_prices > 0, "Price must be granter than zero");
+            require(_prices > 0, "Price must be geater than zero");
         }
-        /*
-        bool hasPriorityToken = nft_.tokenPrices > 0;
-        bool hasEthPrice = ethPrice > 0;
-        
-        uint256 feeAmt;
-        if (hasEthPrice && !hasPriorityToken) {
-            feeAmt = ethPrice.mul(makerFee).div(PERCENTS_DIVIDER);
-            require(msg.value == feeAmt, "invalid pay amount");
-            if (feeAmt > 0) {
-                feeAddr.transfer(feeAmt);
-            }
-        } else {
-            require(msg.value == 0, "invalid pay amount");
-            feeAmt = _prices.mul(makerFee).div(PERCENTS_DIVIDER);
-        }
-        if (feeAmt > 0) {
-            token.transferFrom(_from, feeAddr, feeAmt);
-        }
-        */
+
         createOrderHandle(
             nft_,
             _tokenIds,

@@ -1,10 +1,9 @@
 /*import { time, constants } from "@openzeppelin/test-helpers";*/
 import { expect } from "chai";
-import { ethers } from "hardhat";
 import { setupAddresses, setupEnvironment, minteado } from "./utils";
 let wllt;
 let cnt;
-describe("mint y burn ", function () {
+describe("Mint", function () {
   beforeEach(async () => {
     wllt = await setupAddresses();
     cnt = await setupEnvironment(wllt.owner);
@@ -14,19 +13,19 @@ describe("mint y burn ", function () {
       wllt.seller,
       cnt.erc20,
       cnt.ercuups721,
-      cnt.Market
+      cnt.market
     );
   });
-  it("minteo", async function () {
-    await cnt.erc20.connect(wllt.owner).transfer(wllt.buyer.address, 1000000);
-    await cnt.erc20.connect(wllt.owner).transfer(wllt.seller.address, 1000000);
-    await cnt.erc20.connect(wllt.owner).approve(cnt.Market.address, 1000);
-    await cnt.erc20.connect(wllt.buyer).approve(cnt.Market.address, 1000);
-    await cnt.erc20.connect(wllt.seller).approve(cnt.Market.address, 1000);
-
+  it("should mint token correctly", async function () {
     await cnt.ercuups721.connect(wllt.owner).safeMint(wllt.seller.address, 1);
+    const tokensByOwner = await cnt.ercuups721.tokensByOwner(
+      wllt.seller.address
+    );
+    expect(tokensByOwner.length).to.be.greaterThan(1);
   });
-  it("burneo", async function () {
-    console.log("Burn function not exists");
+  it("should revert if not owner", async function () {
+    await expect(
+      cnt.ercuups721.connect(wllt.seller).safeMint(wllt.seller.address, 1)
+    ).to.be.revertedWith("Ownable: caller is not the owner");
   });
 });

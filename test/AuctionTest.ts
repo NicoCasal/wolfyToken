@@ -1,8 +1,6 @@
 import { expect } from "chai";
-import { ethers } from "hardhat";
 import { setupAddresses, setupEnvironment, minteadoAlAuction } from "./utils";
 import { time } from "@nomicfoundation/hardhat-network-helpers";
-import { values } from "underscore";
 
 let wllt;
 let cnt;
@@ -20,293 +18,271 @@ describe("AuctionV2", function () {
       cnt.auctionv2
     );
   });
-  describe("TARIFAS", function () {
-    it("no hace falta alctualizar", async function () {
+  describe("Fees", function () {
+    it("should revert if same fee", async function () {
       await expect(
         cnt.auctionv2.connect(wllt.owner).setFeeTakerFee(10)
       ).to.be.revertedWith("Not need update");
     });
-    it("actualizar valor", async function () {
+    it("should update value", async function () {
       await expect(cnt.auctionv2.connect(wllt.owner).setFeeTakerFee(9)).to.not
         .be.reverted;
     });
-  });
-  describe("TARIFAS", function () {
-    it("tarifa acorde", async function () {
+
+    it("should revert if over fee limit", async function () {
       await expect(
         cnt.auctionv2.connect(wllt.owner).setFeeTakerFee(10000)
-      ).to.be.revertedWith("Taker percent must be less than 10000");
+      ).to.be.revertedWith("Percent must be less than 10000");
     });
-    it("valor superior de tarifas", async function () {
+    it("should set if under limit", async function () {
       await expect(cnt.auctionv2.connect(wllt.owner).setFeeTakerFee(100)).to.not
         .be.reverted;
     });
-    describe("TARIFAS de transaccion", function () {
-      it("no hace falta alctualizar", async function () {
+  });
+  describe("Transfer Fees", function () {
+    it("should not update if same value", async function () {
+      await expect(
+        cnt.auctionv2.connect(wllt.owner).transferFeeAddress(wllt.owner.address)
+      ).to.be.revertedWith("Not need update");
+    });
+    it("should update with new value", async function () {
+      await expect(
+        cnt.auctionv2
+          .connect(wllt.owner)
+          .transferFeeAddress(wllt.seller.address)
+      ).to.not.be.reverted;
+    });
+  });
+  describe("Auctions", function () {
+    describe("Simple Auction", function () {
+      it("should revert if duration is less than minimum", async function () {
         await expect(
           cnt.auctionv2
-            .connect(wllt.owner)
-            .transferFeeAddress(wllt.owner.address)
-        ).to.be.revertedWith("Not need update");
+            .connect(wllt.seller)
+            .createAuctionSingle(cnt.ercuups721.address, [2], 10, 30, true)
+        ).to.be.revertedWith("Must be over MINIMUM_DURATION");
       });
-      it("hace falta actualizar", async function () {
+      it("should create auction if over minimum duration", async function () {
         await expect(
           cnt.auctionv2
-            .connect(wllt.owner)
-            .transferFeeAddress(wllt.seller.address)
+            .connect(wllt.seller)
+            .createAuctionSingle(cnt.ercuups721.address, [2], 10, 60, true)
         ).to.not.be.reverted;
       });
     });
-    describe("SUBASTAS", function () {
-      describe("SUBASTA SIMPLE", function () {
-        it("timpo minimo no aprobado", async function () {
+    it("should revert if over maximum duration", async function () {
+      await expect(
+        cnt.auctionv2
+          .connect(wllt.seller)
+          .createAuctionSingle(cnt.ercuups721.address, [2], 10, 700, true)
+      ).to.be.revertedWith("Must be under MAXIMUM_DURATION");
+    });
+    it("should not revert if under maximum duration", async function () {
+      await expect(
+        cnt.auctionv2
+          .connect(wllt.seller)
+          .createAuctionSingle(cnt.ercuups721.address, [2], 1, 500, true)
+      ).to.not.be.reverted;
+    });
+    describe("Bidding", function () {
+      describe("Active Auction", function () {
+        it("should revert if auction is not active", async function () {
           await expect(
-            cnt.auctionv2
-              .connect(wllt.seller)
-              .createAuctionSingle(cnt.ercuups721.address, [2], 10, 30, true)
-          ).to.be.revertedWith(
-            "Duration must be greater than MMINIMAL_DURATION"
-          );
+            cnt.auctionv2.connect(wllt.buyer).bid(1, 10)
+          ).to.be.revertedWith("Auction is not active");
         });
-        it("tiempo minimo aprobado", async function () {
+        it("should accept bid on active auction", async function () {
+          await cnt.auctionv2
+            .connect(wllt.seller)
+            .createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
+
+          await expect(cnt.auctionv2.connect(wllt.buyer).bid(1, 10)).to.not.be
+            .reverted;
+        });
+        it("should revert if bidding on own auction", async function () {
+          await cnt.auctionv2
+            .connect(wllt.seller)
+            .createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
+
+          const newOrder = await cnt.auctionv2.currentOrder();
+
           await expect(
-            cnt.auctionv2
-              .connect(wllt.seller)
-              .createAuctionSingle(cnt.ercuups721.address, [2], 10, 60, true)
-          ).to.not.be.reverted;
+            cnt.auctionv2.connect(wllt.seller).bid(newOrder, 2)
+          ).to.be.revertedWith("Cannot bid on own auction");
         });
       });
-      describe("tiempo maximo superado", function () {
-        it("timpo de subaste", async function () {
+      describe("Ended Auction", function () {
+        it("should revert if auction is over", async function () {
+          await cnt.auctionv2
+            .connect(wllt.seller)
+            .createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
+
+          const newOrder = await cnt.auctionv2.currentOrder();
+          const OrderId = await cnt.auctionv2.getAllAuctionsID();
+          await time.increase(61 * 60 * 60);
+
           await expect(
-            cnt.auctionv2
-              .connect(wllt.seller)
-              .createAuctionSingle(cnt.ercuups721.address, [2], 10, 700, true)
-          ).to.be.reverted;
+            cnt.auctionv2.connect(wllt.buyer).bid(newOrder, 2)
+          ).to.be.revertedWith("Auction is over");
         });
-        it("tiempo minimo aprobado", async function () {
-          await expect(
-            cnt.auctionv2
-              .connect(wllt.seller)
-              .createAuctionSingle(cnt.ercuups721.address, [2], 1, 500, true)
-          ).to.not.be.reverted;
+        it("should not revert if auction is active", async function () {
+          await cnt.auctionv2
+            .connect(wllt.seller)
+            .createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
+
+          const newOrder = await cnt.auctionv2.currentOrder();
+
+          await expect(cnt.auctionv2.connect(wllt.buyer).bid(newOrder, 2)).to
+            .not.be.reverted;
         });
       });
-      describe("OFERTAS", function () {
-        describe("subasta activa", function () {
-          it("subasta no esta activa", async function () {
-            await expect(
-              cnt.auctionv2.connect(wllt.owner).bid(1, 10)
-            ).to.be.revertedWith("Auction is not active");
-          });
-          it("subasta si esta activa", async function () {
-            await cnt.auctionv2
-              .connect(wllt.seller)
-              .createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
+      describe("Auction not started", function () {
+        it("should revert when trying to bid", async function () {
+          await cnt.ercuups721
+            .connect(wllt.owner)
+            .safeMint(wllt.seller.address, 1);
+          await cnt.ercuups721
+            .connect(wllt.seller)
+            .approve(cnt.auctionv2.address, 3);
+          await cnt.auctionv2
+            .connect(wllt.seller)
+            .createAuctionSingle(cnt.ercuups721.address, [2, 3], 1, 60, true);
+          const newOrder = await cnt.auctionv2.currentOrder();
 
-            await expect(cnt.auctionv2.connect(wllt.owner).bid(1, 10)).to.not.be
-              .reverted;
-          });
+          await expect(
+            cnt.auctionv2.connect(wllt.buyer).bid(newOrder, 3)
+          ).to.be.revertedWith("Auction is not started");
         });
-        describe("se espera que la subasta haya terminado", function () {
-          it("subasta finalizada", async function () {
-            await cnt.auctionv2
-              .connect(wllt.seller)
-              .createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
+        it("should accept bid on started auction", async function () {
+          await cnt.auctionv2
+            .connect(wllt.seller)
+            .createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
 
-            const newOrder = await cnt.auctionv2.currentOrder();
-            //console.log(newOrder);
-            const OrderId = await cnt.auctionv2.getAllAuctionsID();
-            console.log(OrderId);
-            await time.increase(61 * 60 * 60);
-
-            await expect(
-              cnt.auctionv2.connect(wllt.owner).bid(newOrder, 2)
-            ).to.be.revertedWith("Auction is over");
-          });
-          it("subasta no finalizada", async function () {
-            await cnt.auctionv2
-              .connect(wllt.seller)
-              .createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
-
-            const newOrder = await cnt.auctionv2.currentOrder();
-
-            await expect(cnt.auctionv2.connect(wllt.owner).bid(newOrder, 2)).to
-              .not.be.reverted;
-          });
-        });
-        describe("se espera que la subasta no haya comenzado", function () {
-          it("subasta sin comenzar", async function () {
-            await cnt.ercuups721
-              .connect(wllt.owner)
-              .safeMint(wllt.seller.address, 1);
-            await cnt.ercuups721
-              .connect(wllt.seller)
-              .approve(cnt.auctionv2.address, 3);
-            await cnt.auctionv2
-              .connect(wllt.seller)
-              .createAuctionSingle(cnt.ercuups721.address, [2, 3], 1, 60, true);
-            const newOrder = await cnt.auctionv2.currentOrder();
-
-            await expect(
-              cnt.auctionv2.connect(wllt.seller).bid(newOrder, 3)
-            ).to.be.revertedWith("Auction is not started");
-          });
-          it("subasta comenzo", async function () {
-            await cnt.auctionv2
-              .connect(wllt.seller)
-              .createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
-
-            const newOrder = await cnt.auctionv2.currentOrder();
-            await expect(cnt.auctionv2.connect(wllt.seller).bid(newOrder, 2)).to
-              .not.reverted;
-          });
-        });
-        describe("precio de oferta", function () {
-          it("compra de oferta", async function () {
-            await cnt.auctionv2
-              .connect(wllt.seller)
-              .createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
-
-            const newOrder = await cnt.auctionv2.currentOrder();
-
-            await expect(cnt.auctionv2.connect(wllt.owner).bid(newOrder, 2)).to
-              .not.reverted;
-          });
-
-          it("precio menor a la oferta", async function () {
-            await cnt.auctionv2
-              .connect(wllt.seller)
-              .createAuctionSingle(cnt.ercuups721.address, [2], 3, 60, true);
-
-            const newOrder = await cnt.auctionv2.currentOrder();
-
-            await expect(
-              cnt.auctionv2.connect(wllt.owner).bid(newOrder, 1)
-            ).to.be.revertedWith(
-              "Bid must be greater than current price Token"
-            );
-          });
-          it("oferta mayor al precio", async function () {
-            await cnt.auctionv2
-              .connect(wllt.seller)
-              .createAuctionSingle(cnt.ercuups721.address, [2], 3, 60, true);
-
-            const newOrder = await cnt.auctionv2.currentOrder();
-
-            await expect(cnt.auctionv2.connect(wllt.owner).bid(newOrder, 4)).to
-              .not.be.reverted;
-          });
-        });
-
-        describe("finalizar oferta", function () {
-          describe("OFERTAS", function () {
-            describe("subasta activa", function () {
-              it("finalizar subasta con oferta no activa", async function () {
-                await expect(
-                  cnt.auctionv2.connect(wllt.owner).finishAuction(1)
-                ).to.be.revertedWith("Auction is not active");
-              });
-              it("finalizar subasta", async function () {
-                await cnt.auctionv2
-                  .connect(wllt.seller)
-                  .createAuctionSingle(
-                    cnt.ercuups721.address,
-                    [2],
-                    1,
-                    60,
-                    true
-                  );
-                const newOrder = await cnt.auctionv2.currentOrder();
-                await time.increase(61 * 60 * 60);
-
-                await expect(
-                  cnt.auctionv2.connect(wllt.seller).finishAuction(newOrder)
-                ).to.not.reverted;
-              });
-            });
-            describe("se espera que la subasta haya terminado", function () {
-              it("subasta finalizada", async function () {
-                await cnt.auctionv2
-                  .connect(wllt.seller)
-                  .createAuctionSingle(
-                    cnt.ercuups721.address,
-                    [2],
-                    1,
-                    60,
-                    true
-                  );
-
-                const newOrder = await cnt.auctionv2.currentOrder();
-                //console.log(newOrder);
-
-                await time.increase(60 * 60 * 60);
-
-                await expect(
-                  cnt.auctionv2.connect(wllt.seller).finishAuction(newOrder)
-                ).to.not.reverted;
-              });
-              it("subasta finalizada con 2 ofertas", async function () {
-                await cnt.auctionv2
-                  .connect(wllt.seller)
-                  .createAuctionSingle(
-                    cnt.ercuups721.address,
-                    [2],
-                    1,
-                    60,
-                    true
-                  );
-
-                const newOrder = await cnt.auctionv2.currentOrder();
-                //console.log(newOrder);
-
-                await cnt.auctionv2.connect(wllt.seller).bid(newOrder, 5);
-
-                await cnt.auctionv2.connect(wllt.buyer).bid(newOrder, 10);
-                await time.increase(60 * 60 * 60);
-                await expect(
-                  cnt.auctionv2.connect(wllt.buyer).finishAuction(newOrder)
-                ).to.not.reverted;
-              });
-              it("subasta no finalizada", async function () {
-                await cnt.auctionv2
-                  .connect(wllt.seller)
-                  .createAuctionSingle(
-                    cnt.ercuups721.address,
-                    [2],
-                    1,
-                    60,
-                    true
-                  );
-
-                const newOrder = await cnt.auctionv2.currentOrder();
-
-                await expect(
-                  cnt.auctionv2.connect(wllt.owner).finishAuction(newOrder)
-                ).to.be.revertedWith("Auction is not over");
-
-                //acepta la oferta
-                //rechaza
-                //expira el tiem[po
-              });
-            });
-
-            it("subasta comenzo", async function () {
-              await cnt.auctionv2
-                .connect(wllt.seller)
-                .createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
-
-              const newOrder = await cnt.auctionv2.currentOrder();
-              console.log(newOrder);
-              await expect(
-                cnt.auctionv2.connect(wllt.owner).finishAuction(newOrder)
-              ).to.be.revertedWith("Auction is not over");
-            });
-          });
+          const newOrder = await cnt.auctionv2.currentOrder();
+          await expect(cnt.auctionv2.connect(wllt.buyer).bid(newOrder, 2)).to
+            .not.reverted;
         });
       });
-      describe("removiendo el bid", function () {
-        it("revover offer", async function () {
+      describe("Auction Price", function () {
+        it("should not revert if bid is higher", async function () {
+          await cnt.auctionv2
+            .connect(wllt.seller)
+            .createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
+
+          const newOrder = await cnt.auctionv2.currentOrder();
+
+          await expect(cnt.auctionv2.connect(wllt.buyer).bid(newOrder, 2)).to
+            .not.reverted;
+        });
+
+        it("should revert if bid is lower", async function () {
+          await cnt.auctionv2
+            .connect(wllt.seller)
+            .createAuctionSingle(cnt.ercuups721.address, [2], 3, 60, true);
+
+          const newOrder = await cnt.auctionv2.currentOrder();
+
+          await expect(
+            cnt.auctionv2.connect(wllt.buyer).bid(newOrder, 1)
+          ).to.be.revertedWith("Bid must be greater than price");
+        });
+        it("should revert if bid is the same", async function () {
+          await cnt.auctionv2
+            .connect(wllt.seller)
+            .createAuctionSingle(cnt.ercuups721.address, [2], 3, 60, true);
+
+          const newOrder = await cnt.auctionv2.currentOrder();
+
+          await expect(
+            cnt.auctionv2.connect(wllt.buyer).bid(newOrder, 3)
+          ).to.be.revertedWith("Bid must be greater than price");
+        });
+      });
+      describe("Accepting Offer", function () {
+        it("should accept offer", async function () {
+          await cnt.auctionv2
+            .connect(wllt.seller)
+            .createAuctionSingle(cnt.ercuups721.address, [2], 1, 61, true);
+
+          const newOrder = await cnt.auctionv2.currentOrder();
+          await cnt.auctionv2.connect(wllt.buyer).bid(newOrder, 5);
+
+          await cnt.auctionv2.connect(wllt.buyer).bid(newOrder, 10);
+          await time.increase(60 * 60 * 60);
+          await expect(cnt.auctionv2.connect(wllt.seller).acepOffert(newOrder))
+            .to.not.reverted;
+        });
+      });
+      describe("Auction Finish", function () {
+        it("should revert if auction is not active", async function () {
+          await expect(
+            cnt.auctionv2.connect(wllt.owner).finishAuction(1)
+          ).to.be.revertedWith("Auction is not active");
+        });
+        it("should not revert if auction is active", async function () {
+          await cnt.auctionv2
+            .connect(wllt.seller)
+            .createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
+          const newOrder = await cnt.auctionv2.currentOrder();
+          await time.increase(61 * 60 * 60);
+
+          await expect(
+            cnt.auctionv2.connect(wllt.seller).finishAuction(newOrder)
+          ).to.not.reverted;
+        });
+        it("should finish auction with no bids", async function () {
+          await cnt.auctionv2
+            .connect(wllt.seller)
+            .createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
+
+          const newOrder = await cnt.auctionv2.currentOrder();
+
+          await time.increase(60 * 60 * 60);
+
+          await expect(
+            cnt.auctionv2.connect(wllt.seller).finishAuction(newOrder)
+          ).to.not.reverted;
+        });
+        it("should finish auction with more than one bid", async function () {
+          await cnt.auctionv2
+            .connect(wllt.seller)
+            .createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
+
+          const newOrder = await cnt.auctionv2.currentOrder();
+
+          await cnt.auctionv2.connect(wllt.buyer).bid(newOrder, 5);
+
+          await cnt.auctionv2.connect(wllt.buyer).bid(newOrder, 10);
+          await time.increase(60 * 60 * 60);
+          await expect(
+            cnt.auctionv2.connect(wllt.buyer).finishAuction(newOrder)
+          ).to.not.reverted;
+        });
+        it("should revert if auction duration has not finished", async function () {
+          await cnt.auctionv2
+            .connect(wllt.seller)
+            .createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
+
+          const newOrder = await cnt.auctionv2.currentOrder();
+
+          await expect(
+            cnt.auctionv2.connect(wllt.owner).finishAuction(newOrder)
+          ).to.be.revertedWith("Auction is not over");
+        });
+
+        it("should revert if auction does not exist", async function () {
+          await cnt.auctionv2
+            .connect(wllt.seller)
+            .createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
+
+          const newOrder = await cnt.auctionv2.currentOrder();
+          await expect(
+            cnt.auctionv2.connect(wllt.owner).finishAuction(newOrder)
+          ).to.be.revertedWith("Auction is not over");
+        });
+      });
+      describe("Removing Bids", function () {
+        it("should remove offer", async function () {
           await cnt.auctionv2
             .connect(wllt.seller)
             .createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
@@ -316,13 +292,13 @@ describe("AuctionV2", function () {
           await expect(cnt.auctionv2.connect(wllt.seller).removeOffer(newOrder))
             .to.not.reverted;
         });
-        it("remove offer best bid", async function () {
+        it("should remove best bid", async function () {
           await cnt.auctionv2
             .connect(wllt.seller)
             .createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, true);
 
           const newOrder = await cnt.auctionv2.currentOrder();
-          await cnt.auctionv2.connect(wllt.seller).bid(newOrder, 5);
+          await cnt.auctionv2.connect(wllt.buyer).bid(newOrder, 5);
 
           await cnt.auctionv2.connect(wllt.buyer).bid(newOrder, 10);
           await time.increase(60 * 60 * 60);
@@ -331,60 +307,44 @@ describe("AuctionV2", function () {
             .to.not.reverted;
         });
       });
-      describe("auction timelong", function () {
-        it("create aution time long", async function () {
-          await expect(
-            cnt.auctionv2
-              .connect(wllt.seller)
-              .createAuctionTimeLong(cnt.ercuups721.address, [2], 1, true)
-          ).to.not.reverted;
-        });
-      });
-      describe("bid ByToken false", function () {
-        it("byToken false", async function () {
+      describe("Bidding not byToken", function () {
+        it("should accept non-token bid", async function () {
           await cnt.auctionv2
             .connect(wllt.seller)
             .createAuctionSingle(cnt.ercuups721.address, [2], 1, 60, false);
 
           const newOrder = await cnt.auctionv2.currentOrder();
           await cnt.auctionv2
-            .connect(wllt.seller)
+            .connect(wllt.buyer)
             .bid(newOrder, 2, { value: 2 });
 
           await expect(
-            cnt.auctionv2.connect(wllt.seller).bid(newOrder, 2, { value: 4 })
+            cnt.auctionv2.connect(wllt.buyer).bid(newOrder, 2, { value: 4 })
           ).to.not.reverted;
         });
       });
-
-      describe("removiendo la oferta", function () {
-        it("remove Bid", async function () {
+    });
+    describe("Indefinite Auction", function () {
+      it("should create infinite auction", async function () {
+        await expect(
+          cnt.auctionv2
+            .connect(wllt.seller)
+            .createAuctionTimeLong(cnt.ercuups721.address, [2], 1, true)
+        ).to.not.reverted;
+      });
+      describe("Bidding", function () {
+        it("should accept bid", async function () {
           await cnt.auctionv2
             .connect(wllt.seller)
             .createAuctionTimeLong(cnt.ercuups721.address, [2], 1, true);
 
           const newOrder = await cnt.auctionv2.currentOrder();
-          await cnt.auctionv2.connect(wllt.seller).bid(newOrder, 5);
+          await cnt.auctionv2.connect(wllt.buyer).bid(newOrder, 5);
 
           await cnt.auctionv2.connect(wllt.buyer).bid(newOrder, 10);
 
           await expect(cnt.auctionv2.connect(wllt.buyer).removeBid(newOrder)).to
             .not.reverted;
-        });
-      });
-      describe("acepta oferta", function () {
-        it("aceptando oferta", async function () {
-          await cnt.auctionv2
-            .connect(wllt.seller)
-            .createAuctionSingle(cnt.ercuups721.address, [2], 1, 61, true);
-
-          const newOrder = await cnt.auctionv2.currentOrder();
-          await cnt.auctionv2.connect(wllt.seller).bid(newOrder, 5);
-
-          await cnt.auctionv2.connect(wllt.buyer).bid(newOrder, 10);
-          await time.increase(60 * 60 * 60);
-          await expect(cnt.auctionv2.connect(wllt.seller).acepOffert(newOrder))
-            .to.not.reverted;
         });
       });
     });
