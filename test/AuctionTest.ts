@@ -209,7 +209,7 @@ describe("AuctionV2", function () {
 
           await cnt.auctionv2.connect(wllt.buyer).bid(newOrder, 10);
           await time.increase(60 * 60 * 60);
-          await expect(cnt.auctionv2.connect(wllt.seller).acepOffert(newOrder))
+          await expect(cnt.auctionv2.connect(wllt.seller).acceptOffer(newOrder))
             .to.not.reverted;
         });
       });

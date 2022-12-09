@@ -3109,7 +3109,7 @@ contract AuctionV2 is ERC721Holder, Ownable, Pausable, IMarket {
         );
     }
 
-    function acepOffert(uint256 _order) external {
+    function acceptOffer(uint256 _order) external {
         require(auctionIsActive(_order), "Auction is not active");
         require(auctionStarted(_order), "Auction is not started");
         require(
