@@ -121,7 +121,11 @@ library EnumerableSet {
     /**
      * @dev Returns true if the value is in the set. O(1).
      */
-    function _contains(Set storage set, bytes32 value) private view returns (bool) {
+    function _contains(Set storage set, bytes32 value)
+        private
+        view
+        returns (bool)
+    {
         return set._indexes[value] != 0;
     }
 
@@ -142,7 +146,11 @@ library EnumerableSet {
      *
      * - `index` must be strictly less than {length}.
      */
-    function _at(Set storage set, uint256 index) private view returns (bytes32) {
+    function _at(Set storage set, uint256 index)
+        private
+        view
+        returns (bytes32)
+    {
         return set._values[index];
     }
 
@@ -170,7 +178,10 @@ library EnumerableSet {
      * Returns true if the value was added to the set, that is if it was not
      * already present.
      */
-    function add(Bytes32Set storage set, bytes32 value) internal returns (bool) {
+    function add(Bytes32Set storage set, bytes32 value)
+        internal
+        returns (bool)
+    {
         return _add(set._inner, value);
     }
 
@@ -180,14 +191,21 @@ library EnumerableSet {
      * Returns true if the value was removed from the set, that is if it was
      * present.
      */
-    function remove(Bytes32Set storage set, bytes32 value) internal returns (bool) {
+    function remove(Bytes32Set storage set, bytes32 value)
+        internal
+        returns (bool)
+    {
         return _remove(set._inner, value);
     }
 
     /**
      * @dev Returns true if the value is in the set. O(1).
      */
-    function contains(Bytes32Set storage set, bytes32 value) internal view returns (bool) {
+    function contains(Bytes32Set storage set, bytes32 value)
+        internal
+        view
+        returns (bool)
+    {
         return _contains(set._inner, value);
     }
 
@@ -208,7 +226,11 @@ library EnumerableSet {
      *
      * - `index` must be strictly less than {length}.
      */
-    function at(Bytes32Set storage set, uint256 index) internal view returns (bytes32) {
+    function at(Bytes32Set storage set, uint256 index)
+        internal
+        view
+        returns (bytes32)
+    {
         return _at(set._inner, index);
     }
 
@@ -220,7 +242,11 @@ library EnumerableSet {
      * this function has an unbounded cost, and using it as part of a state-changing function may render the function
      * uncallable if the set grows to a point where copying to memory consumes too much gas to fit in a block.
      */
-    function values(Bytes32Set storage set) internal view returns (bytes32[] memory) {
+    function values(Bytes32Set storage set)
+        internal
+        view
+        returns (bytes32[] memory)
+    {
         bytes32[] memory store = _values(set._inner);
         bytes32[] memory result;
 
@@ -244,7 +270,10 @@ library EnumerableSet {
      * Returns true if the value was added to the set, that is if it was not
      * already present.
      */
-    function add(AddressSet storage set, address value) internal returns (bool) {
+    function add(AddressSet storage set, address value)
+        internal
+        returns (bool)
+    {
         return _add(set._inner, bytes32(uint256(uint160(value))));
     }
 
@@ -254,14 +283,21 @@ library EnumerableSet {
      * Returns true if the value was removed from the set, that is if it was
      * present.
      */
-    function remove(AddressSet storage set, address value) internal returns (bool) {
+    function remove(AddressSet storage set, address value)
+        internal
+        returns (bool)
+    {
         return _remove(set._inner, bytes32(uint256(uint160(value))));
     }
 
     /**
      * @dev Returns true if the value is in the set. O(1).
      */
-    function contains(AddressSet storage set, address value) internal view returns (bool) {
+    function contains(AddressSet storage set, address value)
+        internal
+        view
+        returns (bool)
+    {
         return _contains(set._inner, bytes32(uint256(uint160(value))));
     }
 
@@ -282,7 +318,11 @@ library EnumerableSet {
      *
      * - `index` must be strictly less than {length}.
      */
-    function at(AddressSet storage set, uint256 index) internal view returns (address) {
+    function at(AddressSet storage set, uint256 index)
+        internal
+        view
+        returns (address)
+    {
         return address(uint160(uint256(_at(set._inner, index))));
     }
 
@@ -294,7 +334,11 @@ library EnumerableSet {
      * this function has an unbounded cost, and using it as part of a state-changing function may render the function
      * uncallable if the set grows to a point where copying to memory consumes too much gas to fit in a block.
      */
-    function values(AddressSet storage set) internal view returns (address[] memory) {
+    function values(AddressSet storage set)
+        internal
+        view
+        returns (address[] memory)
+    {
         bytes32[] memory store = _values(set._inner);
         address[] memory result;
 
@@ -328,14 +372,21 @@ library EnumerableSet {
      * Returns true if the value was removed from the set, that is if it was
      * present.
      */
-    function remove(UintSet storage set, uint256 value) internal returns (bool) {
+    function remove(UintSet storage set, uint256 value)
+        internal
+        returns (bool)
+    {
         return _remove(set._inner, bytes32(value));
     }
 
     /**
      * @dev Returns true if the value is in the set. O(1).
      */
-    function contains(UintSet storage set, uint256 value) internal view returns (bool) {
+    function contains(UintSet storage set, uint256 value)
+        internal
+        view
+        returns (bool)
+    {
         return _contains(set._inner, bytes32(value));
     }
 
@@ -356,7 +407,11 @@ library EnumerableSet {
      *
      * - `index` must be strictly less than {length}.
      */
-    function at(UintSet storage set, uint256 index) internal view returns (uint256) {
+    function at(UintSet storage set, uint256 index)
+        internal
+        view
+        returns (uint256)
+    {
         return uint256(_at(set._inner, index));
     }
 
@@ -368,7 +423,11 @@ library EnumerableSet {
      * this function has an unbounded cost, and using it as part of a state-changing function may render the function
      * uncallable if the set grows to a point where copying to memory consumes too much gas to fit in a block.
      */
-    function values(UintSet storage set) internal view returns (uint256[] memory) {
+    function values(UintSet storage set)
+        internal
+        view
+        returns (uint256[] memory)
+    {
         bytes32[] memory store = _values(set._inner);
         uint256[] memory result;
 
@@ -381,9 +440,7 @@ library EnumerableSet {
     }
 }
 
-
 // File @openzeppelin/contracts/utils/structs/EnumerableMap.sol@v4.8.0
-
 
 // OpenZeppelin Contracts (last updated v4.8.0) (utils/structs/EnumerableMap.sol)
 // This file was procedurally generated from scripts/generate/templates/EnumerableMap.js.
@@ -468,7 +525,10 @@ library EnumerableMap {
      *
      * Returns true if the key was removed from the map, that is if it was present.
      */
-    function remove(Bytes32ToBytes32Map storage map, bytes32 key) internal returns (bool) {
+    function remove(Bytes32ToBytes32Map storage map, bytes32 key)
+        internal
+        returns (bool)
+    {
         delete map._values[key];
         return map._keys.remove(key);
     }
@@ -476,14 +536,22 @@ library EnumerableMap {
     /**
      * @dev Returns true if the key is in the map. O(1).
      */
-    function contains(Bytes32ToBytes32Map storage map, bytes32 key) internal view returns (bool) {
+    function contains(Bytes32ToBytes32Map storage map, bytes32 key)
+        internal
+        view
+        returns (bool)
+    {
         return map._keys.contains(key);
     }
 
     /**
      * @dev Returns the number of key-value pairs in the map. O(1).
      */
-    function length(Bytes32ToBytes32Map storage map) internal view returns (uint256) {
+    function length(Bytes32ToBytes32Map storage map)
+        internal
+        view
+        returns (uint256)
+    {
         return map._keys.length();
     }
 
@@ -497,7 +565,11 @@ library EnumerableMap {
      *
      * - `index` must be strictly less than {length}.
      */
-    function at(Bytes32ToBytes32Map storage map, uint256 index) internal view returns (bytes32, bytes32) {
+    function at(Bytes32ToBytes32Map storage map, uint256 index)
+        internal
+        view
+        returns (bytes32, bytes32)
+    {
         bytes32 key = map._keys.at(index);
         return (key, map._values[key]);
     }
@@ -506,7 +578,11 @@ library EnumerableMap {
      * @dev Tries to returns the value associated with `key`. O(1).
      * Does not revert if `key` is not in the map.
      */
-    function tryGet(Bytes32ToBytes32Map storage map, bytes32 key) internal view returns (bool, bytes32) {
+    function tryGet(Bytes32ToBytes32Map storage map, bytes32 key)
+        internal
+        view
+        returns (bool, bytes32)
+    {
         bytes32 value = map._values[key];
         if (value == bytes32(0)) {
             return (contains(map, key), bytes32(0));
@@ -522,9 +598,16 @@ library EnumerableMap {
      *
      * - `key` must be in the map.
      */
-    function get(Bytes32ToBytes32Map storage map, bytes32 key) internal view returns (bytes32) {
+    function get(Bytes32ToBytes32Map storage map, bytes32 key)
+        internal
+        view
+        returns (bytes32)
+    {
         bytes32 value = map._values[key];
-        require(value != 0 || contains(map, key), "EnumerableMap: nonexistent key");
+        require(
+            value != 0 || contains(map, key),
+            "EnumerableMap: nonexistent key"
+        );
         return value;
     }
 
@@ -570,14 +653,21 @@ library EnumerableMap {
      *
      * Returns true if the key was removed from the map, that is if it was present.
      */
-    function remove(UintToUintMap storage map, uint256 key) internal returns (bool) {
+    function remove(UintToUintMap storage map, uint256 key)
+        internal
+        returns (bool)
+    {
         return remove(map._inner, bytes32(key));
     }
 
     /**
      * @dev Returns true if the key is in the map. O(1).
      */
-    function contains(UintToUintMap storage map, uint256 key) internal view returns (bool) {
+    function contains(UintToUintMap storage map, uint256 key)
+        internal
+        view
+        returns (bool)
+    {
         return contains(map._inner, bytes32(key));
     }
 
@@ -597,7 +687,11 @@ library EnumerableMap {
      *
      * - `index` must be strictly less than {length}.
      */
-    function at(UintToUintMap storage map, uint256 index) internal view returns (uint256, uint256) {
+    function at(UintToUintMap storage map, uint256 index)
+        internal
+        view
+        returns (uint256, uint256)
+    {
         (bytes32 key, bytes32 value) = at(map._inner, index);
         return (uint256(key), uint256(value));
     }
@@ -606,7 +700,11 @@ library EnumerableMap {
      * @dev Tries to returns the value associated with `key`. O(1).
      * Does not revert if `key` is not in the map.
      */
-    function tryGet(UintToUintMap storage map, uint256 key) internal view returns (bool, uint256) {
+    function tryGet(UintToUintMap storage map, uint256 key)
+        internal
+        view
+        returns (bool, uint256)
+    {
         (bool success, bytes32 value) = tryGet(map._inner, bytes32(key));
         return (success, uint256(value));
     }
@@ -618,7 +716,11 @@ library EnumerableMap {
      *
      * - `key` must be in the map.
      */
-    function get(UintToUintMap storage map, uint256 key) internal view returns (uint256) {
+    function get(UintToUintMap storage map, uint256 key)
+        internal
+        view
+        returns (uint256)
+    {
         return uint256(get(map._inner, bytes32(key)));
     }
 
@@ -662,21 +764,32 @@ library EnumerableMap {
      *
      * Returns true if the key was removed from the map, that is if it was present.
      */
-    function remove(UintToAddressMap storage map, uint256 key) internal returns (bool) {
+    function remove(UintToAddressMap storage map, uint256 key)
+        internal
+        returns (bool)
+    {
         return remove(map._inner, bytes32(key));
     }
 
     /**
      * @dev Returns true if the key is in the map. O(1).
      */
-    function contains(UintToAddressMap storage map, uint256 key) internal view returns (bool) {
+    function contains(UintToAddressMap storage map, uint256 key)
+        internal
+        view
+        returns (bool)
+    {
         return contains(map._inner, bytes32(key));
     }
 
     /**
      * @dev Returns the number of elements in the map. O(1).
      */
-    function length(UintToAddressMap storage map) internal view returns (uint256) {
+    function length(UintToAddressMap storage map)
+        internal
+        view
+        returns (uint256)
+    {
         return length(map._inner);
     }
 
@@ -689,7 +802,11 @@ library EnumerableMap {
      *
      * - `index` must be strictly less than {length}.
      */
-    function at(UintToAddressMap storage map, uint256 index) internal view returns (uint256, address) {
+    function at(UintToAddressMap storage map, uint256 index)
+        internal
+        view
+        returns (uint256, address)
+    {
         (bytes32 key, bytes32 value) = at(map._inner, index);
         return (uint256(key), address(uint160(uint256(value))));
     }
@@ -698,7 +815,11 @@ library EnumerableMap {
      * @dev Tries to returns the value associated with `key`. O(1).
      * Does not revert if `key` is not in the map.
      */
-    function tryGet(UintToAddressMap storage map, uint256 key) internal view returns (bool, address) {
+    function tryGet(UintToAddressMap storage map, uint256 key)
+        internal
+        view
+        returns (bool, address)
+    {
         (bool success, bytes32 value) = tryGet(map._inner, bytes32(key));
         return (success, address(uint160(uint256(value))));
     }
@@ -710,7 +831,11 @@ library EnumerableMap {
      *
      * - `key` must be in the map.
      */
-    function get(UintToAddressMap storage map, uint256 key) internal view returns (address) {
+    function get(UintToAddressMap storage map, uint256 key)
+        internal
+        view
+        returns (address)
+    {
         return address(uint160(uint256(get(map._inner, bytes32(key)))));
     }
 
@@ -725,7 +850,10 @@ library EnumerableMap {
         uint256 key,
         string memory errorMessage
     ) internal view returns (address) {
-        return address(uint160(uint256(get(map._inner, bytes32(key), errorMessage))));
+        return
+            address(
+                uint160(uint256(get(map._inner, bytes32(key), errorMessage)))
+            );
     }
 
     // AddressToUintMap
@@ -754,21 +882,32 @@ library EnumerableMap {
      *
      * Returns true if the key was removed from the map, that is if it was present.
      */
-    function remove(AddressToUintMap storage map, address key) internal returns (bool) {
+    function remove(AddressToUintMap storage map, address key)
+        internal
+        returns (bool)
+    {
         return remove(map._inner, bytes32(uint256(uint160(key))));
     }
 
     /**
      * @dev Returns true if the key is in the map. O(1).
      */
-    function contains(AddressToUintMap storage map, address key) internal view returns (bool) {
+    function contains(AddressToUintMap storage map, address key)
+        internal
+        view
+        returns (bool)
+    {
         return contains(map._inner, bytes32(uint256(uint160(key))));
     }
 
     /**
      * @dev Returns the number of elements in the map. O(1).
      */
-    function length(AddressToUintMap storage map) internal view returns (uint256) {
+    function length(AddressToUintMap storage map)
+        internal
+        view
+        returns (uint256)
+    {
         return length(map._inner);
     }
 
@@ -781,7 +920,11 @@ library EnumerableMap {
      *
      * - `index` must be strictly less than {length}.
      */
-    function at(AddressToUintMap storage map, uint256 index) internal view returns (address, uint256) {
+    function at(AddressToUintMap storage map, uint256 index)
+        internal
+        view
+        returns (address, uint256)
+    {
         (bytes32 key, bytes32 value) = at(map._inner, index);
         return (address(uint160(uint256(key))), uint256(value));
     }
@@ -790,8 +933,15 @@ library EnumerableMap {
      * @dev Tries to returns the value associated with `key`. O(1).
      * Does not revert if `key` is not in the map.
      */
-    function tryGet(AddressToUintMap storage map, address key) internal view returns (bool, uint256) {
-        (bool success, bytes32 value) = tryGet(map._inner, bytes32(uint256(uint160(key))));
+    function tryGet(AddressToUintMap storage map, address key)
+        internal
+        view
+        returns (bool, uint256)
+    {
+        (bool success, bytes32 value) = tryGet(
+            map._inner,
+            bytes32(uint256(uint160(key)))
+        );
         return (success, uint256(value));
     }
 
@@ -802,7 +952,11 @@ library EnumerableMap {
      *
      * - `key` must be in the map.
      */
-    function get(AddressToUintMap storage map, address key) internal view returns (uint256) {
+    function get(AddressToUintMap storage map, address key)
+        internal
+        view
+        returns (uint256)
+    {
         return uint256(get(map._inner, bytes32(uint256(uint160(key)))));
     }
 
@@ -817,7 +971,10 @@ library EnumerableMap {
         address key,
         string memory errorMessage
     ) internal view returns (uint256) {
-        return uint256(get(map._inner, bytes32(uint256(uint160(key))), errorMessage));
+        return
+            uint256(
+                get(map._inner, bytes32(uint256(uint160(key))), errorMessage)
+            );
     }
 
     // Bytes32ToUintMap
@@ -846,21 +1003,32 @@ library EnumerableMap {
      *
      * Returns true if the key was removed from the map, that is if it was present.
      */
-    function remove(Bytes32ToUintMap storage map, bytes32 key) internal returns (bool) {
+    function remove(Bytes32ToUintMap storage map, bytes32 key)
+        internal
+        returns (bool)
+    {
         return remove(map._inner, key);
     }
 
     /**
      * @dev Returns true if the key is in the map. O(1).
      */
-    function contains(Bytes32ToUintMap storage map, bytes32 key) internal view returns (bool) {
+    function contains(Bytes32ToUintMap storage map, bytes32 key)
+        internal
+        view
+        returns (bool)
+    {
         return contains(map._inner, key);
     }
 
     /**
      * @dev Returns the number of elements in the map. O(1).
      */
-    function length(Bytes32ToUintMap storage map) internal view returns (uint256) {
+    function length(Bytes32ToUintMap storage map)
+        internal
+        view
+        returns (uint256)
+    {
         return length(map._inner);
     }
 
@@ -873,7 +1041,11 @@ library EnumerableMap {
      *
      * - `index` must be strictly less than {length}.
      */
-    function at(Bytes32ToUintMap storage map, uint256 index) internal view returns (bytes32, uint256) {
+    function at(Bytes32ToUintMap storage map, uint256 index)
+        internal
+        view
+        returns (bytes32, uint256)
+    {
         (bytes32 key, bytes32 value) = at(map._inner, index);
         return (key, uint256(value));
     }
@@ -882,7 +1054,11 @@ library EnumerableMap {
      * @dev Tries to returns the value associated with `key`. O(1).
      * Does not revert if `key` is not in the map.
      */
-    function tryGet(Bytes32ToUintMap storage map, bytes32 key) internal view returns (bool, uint256) {
+    function tryGet(Bytes32ToUintMap storage map, bytes32 key)
+        internal
+        view
+        returns (bool, uint256)
+    {
         (bool success, bytes32 value) = tryGet(map._inner, key);
         return (success, uint256(value));
     }
@@ -894,7 +1070,11 @@ library EnumerableMap {
      *
      * - `key` must be in the map.
      */
-    function get(Bytes32ToUintMap storage map, bytes32 key) internal view returns (uint256) {
+    function get(Bytes32ToUintMap storage map, bytes32 key)
+        internal
+        view
+        returns (uint256)
+    {
         return uint256(get(map._inner, key));
     }
 
@@ -913,9 +1093,7 @@ library EnumerableMap {
     }
 }
 
-
 // File @openzeppelin/contracts/utils/Context.sol@v4.8.0
-
 
 // OpenZeppelin Contracts v4.4.1 (utils/Context.sol)
 
@@ -941,9 +1119,7 @@ abstract contract Context {
     }
 }
 
-
 // File @openzeppelin/contracts/access/Ownable.sol@v4.8.0
-
 
 // OpenZeppelin Contracts (last updated v4.7.0) (access/Ownable.sol)
 
@@ -964,7 +1140,10 @@ pragma solidity ^0.8.0;
 abstract contract Ownable is Context {
     address private _owner;
 
-    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+    event OwnershipTransferred(
+        address indexed previousOwner,
+        address indexed newOwner
+    );
 
     /**
      * @dev Initializes the contract setting the deployer as the initial owner.
@@ -1011,7 +1190,10 @@ abstract contract Ownable is Context {
      * Can only be called by the current owner.
      */
     function transferOwnership(address newOwner) public virtual onlyOwner {
-        require(newOwner != address(0), "Ownable: new owner is the zero address");
+        require(
+            newOwner != address(0),
+            "Ownable: new owner is the zero address"
+        );
         _transferOwnership(newOwner);
     }
 
@@ -1026,9 +1208,7 @@ abstract contract Ownable is Context {
     }
 }
 
-
 // File @openzeppelin/contracts/security/Pausable.sol@v4.8.0
-
 
 // OpenZeppelin Contracts (last updated v4.7.0) (security/Pausable.sol)
 
@@ -1133,9 +1313,7 @@ abstract contract Pausable is Context {
     }
 }
 
-
 // File @openzeppelin/contracts/token/ERC721/IERC721Receiver.sol@v4.8.0
-
 
 // OpenZeppelin Contracts (last updated v4.6.0) (token/ERC721/IERC721Receiver.sol)
 
@@ -1164,9 +1342,7 @@ interface IERC721Receiver {
     ) external returns (bytes4);
 }
 
-
 // File @openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol@v4.8.0
-
 
 // OpenZeppelin Contracts v4.4.1 (token/ERC721/utils/ERC721Holder.sol)
 
@@ -1194,9 +1370,7 @@ contract ERC721Holder is IERC721Receiver {
     }
 }
 
-
 // File @openzeppelin/contracts/utils/math/SafeMath.sol@v4.8.0
-
 
 // OpenZeppelin Contracts (last updated v4.6.0) (utils/math/SafeMath.sol)
 
@@ -1218,7 +1392,11 @@ library SafeMath {
      *
      * _Available since v3.4._
      */
-    function tryAdd(uint256 a, uint256 b) internal pure returns (bool, uint256) {
+    function tryAdd(uint256 a, uint256 b)
+        internal
+        pure
+        returns (bool, uint256)
+    {
         unchecked {
             uint256 c = a + b;
             if (c < a) return (false, 0);
@@ -1231,7 +1409,11 @@ library SafeMath {
      *
      * _Available since v3.4._
      */
-    function trySub(uint256 a, uint256 b) internal pure returns (bool, uint256) {
+    function trySub(uint256 a, uint256 b)
+        internal
+        pure
+        returns (bool, uint256)
+    {
         unchecked {
             if (b > a) return (false, 0);
             return (true, a - b);
@@ -1243,7 +1425,11 @@ library SafeMath {
      *
      * _Available since v3.4._
      */
-    function tryMul(uint256 a, uint256 b) internal pure returns (bool, uint256) {
+    function tryMul(uint256 a, uint256 b)
+        internal
+        pure
+        returns (bool, uint256)
+    {
         unchecked {
             // Gas optimization: this is cheaper than requiring 'a' not being zero, but the
             // benefit is lost if 'b' is also tested.
@@ -1260,7 +1446,11 @@ library SafeMath {
      *
      * _Available since v3.4._
      */
-    function tryDiv(uint256 a, uint256 b) internal pure returns (bool, uint256) {
+    function tryDiv(uint256 a, uint256 b)
+        internal
+        pure
+        returns (bool, uint256)
+    {
         unchecked {
             if (b == 0) return (false, 0);
             return (true, a / b);
@@ -1272,7 +1462,11 @@ library SafeMath {
      *
      * _Available since v3.4._
      */
-    function tryMod(uint256 a, uint256 b) internal pure returns (bool, uint256) {
+    function tryMod(uint256 a, uint256 b)
+        internal
+        pure
+        returns (bool, uint256)
+    {
         unchecked {
             if (b == 0) return (false, 0);
             return (true, a % b);
@@ -1425,9 +1619,7 @@ library SafeMath {
     }
 }
 
-
 // File @openzeppelin/contracts/utils/math/Math.sol@v4.8.0
-
 
 // OpenZeppelin Contracts (last updated v4.8.0) (utils/math/Math.sol)
 
@@ -1621,10 +1813,16 @@ library Math {
     /**
      * @notice Calculates sqrt(a), following the selected rounding direction.
      */
-    function sqrt(uint256 a, Rounding rounding) internal pure returns (uint256) {
+    function sqrt(uint256 a, Rounding rounding)
+        internal
+        pure
+        returns (uint256)
+    {
         unchecked {
             uint256 result = sqrt(a);
-            return result + (rounding == Rounding.Up && result * result < a ? 1 : 0);
+            return
+                result +
+                (rounding == Rounding.Up && result * result < a ? 1 : 0);
         }
     }
 
@@ -1674,10 +1872,16 @@ library Math {
      * @dev Return the log in base 2, following the selected rounding direction, of a positive value.
      * Returns 0 if given 0.
      */
-    function log2(uint256 value, Rounding rounding) internal pure returns (uint256) {
+    function log2(uint256 value, Rounding rounding)
+        internal
+        pure
+        returns (uint256)
+    {
         unchecked {
             uint256 result = log2(value);
-            return result + (rounding == Rounding.Up && 1 << result < value ? 1 : 0);
+            return
+                result +
+                (rounding == Rounding.Up && 1 << result < value ? 1 : 0);
         }
     }
 
@@ -1723,10 +1927,16 @@ library Math {
      * @dev Return the log in base 10, following the selected rounding direction, of a positive value.
      * Returns 0 if given 0.
      */
-    function log10(uint256 value, Rounding rounding) internal pure returns (uint256) {
+    function log10(uint256 value, Rounding rounding)
+        internal
+        pure
+        returns (uint256)
+    {
         unchecked {
             uint256 result = log10(value);
-            return result + (rounding == Rounding.Up && 10**result < value ? 1 : 0);
+            return
+                result +
+                (rounding == Rounding.Up && 10**result < value ? 1 : 0);
         }
     }
 
@@ -1766,17 +1976,21 @@ library Math {
      * @dev Return the log in base 10, following the selected rounding direction, of a positive value.
      * Returns 0 if given 0.
      */
-    function log256(uint256 value, Rounding rounding) internal pure returns (uint256) {
+    function log256(uint256 value, Rounding rounding)
+        internal
+        pure
+        returns (uint256)
+    {
         unchecked {
             uint256 result = log256(value);
-            return result + (rounding == Rounding.Up && 1 << (result * 8) < value ? 1 : 0);
+            return
+                result +
+                (rounding == Rounding.Up && 1 << (result * 8) < value ? 1 : 0);
         }
     }
 }
 
-
 // File @openzeppelin/contracts/token/ERC20/IERC20.sol@v4.8.0
-
 
 // OpenZeppelin Contracts (last updated v4.6.0) (token/ERC20/IERC20.sol)
 
@@ -1798,7 +2012,11 @@ interface IERC20 {
      * @dev Emitted when the allowance of a `spender` for an `owner` is set by
      * a call to {approve}. `value` is the new allowance.
      */
-    event Approval(address indexed owner, address indexed spender, uint256 value);
+    event Approval(
+        address indexed owner,
+        address indexed spender,
+        uint256 value
+    );
 
     /**
      * @dev Returns the amount of tokens in existence.
@@ -1826,7 +2044,10 @@ interface IERC20 {
      *
      * This value changes when {approve} or {transferFrom} are called.
      */
-    function allowance(address owner, address spender) external view returns (uint256);
+    function allowance(address owner, address spender)
+        external
+        view
+        returns (uint256);
 
     /**
      * @dev Sets `amount` as the allowance of `spender` over the caller's tokens.
@@ -1860,9 +2081,7 @@ interface IERC20 {
     ) external returns (bool);
 }
 
-
 // File @openzeppelin/contracts/token/ERC20/extensions/draft-IERC20Permit.sol@v4.8.0
-
 
 // OpenZeppelin Contracts v4.4.1 (token/ERC20/extensions/draft-IERC20Permit.sol)
 
@@ -1924,9 +2143,7 @@ interface IERC20Permit {
     function DOMAIN_SEPARATOR() external view returns (bytes32);
 }
 
-
 // File @openzeppelin/contracts/utils/Address.sol@v4.8.0
-
 
 // OpenZeppelin Contracts (last updated v4.8.0) (utils/Address.sol)
 
@@ -1987,10 +2204,16 @@ library Address {
      * https://solidity.readthedocs.io/en/v0.5.11/security-considerations.html#use-the-checks-effects-interactions-pattern[checks-effects-interactions pattern].
      */
     function sendValue(address payable recipient, uint256 amount) internal {
-        require(address(this).balance >= amount, "Address: insufficient balance");
+        require(
+            address(this).balance >= amount,
+            "Address: insufficient balance"
+        );
 
         (bool success, ) = recipient.call{value: amount}("");
-        require(success, "Address: unable to send value, recipient may have reverted");
+        require(
+            success,
+            "Address: unable to send value, recipient may have reverted"
+        );
     }
 
     /**
@@ -2011,8 +2234,17 @@ library Address {
      *
      * _Available since v3.1._
      */
-    function functionCall(address target, bytes memory data) internal returns (bytes memory) {
-        return functionCallWithValue(target, data, 0, "Address: low-level call failed");
+    function functionCall(address target, bytes memory data)
+        internal
+        returns (bytes memory)
+    {
+        return
+            functionCallWithValue(
+                target,
+                data,
+                0,
+                "Address: low-level call failed"
+            );
     }
 
     /**
@@ -2045,7 +2277,13 @@ library Address {
         bytes memory data,
         uint256 value
     ) internal returns (bytes memory) {
-        return functionCallWithValue(target, data, value, "Address: low-level call with value failed");
+        return
+            functionCallWithValue(
+                target,
+                data,
+                value,
+                "Address: low-level call with value failed"
+            );
     }
 
     /**
@@ -2060,9 +2298,20 @@ library Address {
         uint256 value,
         string memory errorMessage
     ) internal returns (bytes memory) {
-        require(address(this).balance >= value, "Address: insufficient balance for call");
-        (bool success, bytes memory returndata) = target.call{value: value}(data);
-        return verifyCallResultFromTarget(target, success, returndata, errorMessage);
+        require(
+            address(this).balance >= value,
+            "Address: insufficient balance for call"
+        );
+        (bool success, bytes memory returndata) = target.call{value: value}(
+            data
+        );
+        return
+            verifyCallResultFromTarget(
+                target,
+                success,
+                returndata,
+                errorMessage
+            );
     }
 
     /**
@@ -2071,8 +2320,17 @@ library Address {
      *
      * _Available since v3.3._
      */
-    function functionStaticCall(address target, bytes memory data) internal view returns (bytes memory) {
-        return functionStaticCall(target, data, "Address: low-level static call failed");
+    function functionStaticCall(address target, bytes memory data)
+        internal
+        view
+        returns (bytes memory)
+    {
+        return
+            functionStaticCall(
+                target,
+                data,
+                "Address: low-level static call failed"
+            );
     }
 
     /**
@@ -2087,7 +2345,13 @@ library Address {
         string memory errorMessage
     ) internal view returns (bytes memory) {
         (bool success, bytes memory returndata) = target.staticcall(data);
-        return verifyCallResultFromTarget(target, success, returndata, errorMessage);
+        return
+            verifyCallResultFromTarget(
+                target,
+                success,
+                returndata,
+                errorMessage
+            );
     }
 
     /**
@@ -2096,8 +2360,16 @@ library Address {
      *
      * _Available since v3.4._
      */
-    function functionDelegateCall(address target, bytes memory data) internal returns (bytes memory) {
-        return functionDelegateCall(target, data, "Address: low-level delegate call failed");
+    function functionDelegateCall(address target, bytes memory data)
+        internal
+        returns (bytes memory)
+    {
+        return
+            functionDelegateCall(
+                target,
+                data,
+                "Address: low-level delegate call failed"
+            );
     }
 
     /**
@@ -2112,7 +2384,13 @@ library Address {
         string memory errorMessage
     ) internal returns (bytes memory) {
         (bool success, bytes memory returndata) = target.delegatecall(data);
-        return verifyCallResultFromTarget(target, success, returndata, errorMessage);
+        return
+            verifyCallResultFromTarget(
+                target,
+                success,
+                returndata,
+                errorMessage
+            );
     }
 
     /**
@@ -2157,7 +2435,10 @@ library Address {
         }
     }
 
-    function _revert(bytes memory returndata, string memory errorMessage) private pure {
+    function _revert(bytes memory returndata, string memory errorMessage)
+        private
+        pure
+    {
         // Look for revert reason and bubble it up if present
         if (returndata.length > 0) {
             // The easiest way to bubble the revert reason is using memory via assembly
@@ -2172,15 +2453,11 @@ library Address {
     }
 }
 
-
 // File @openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol@v4.8.0
-
 
 // OpenZeppelin Contracts (last updated v4.8.0) (token/ERC20/utils/SafeERC20.sol)
 
 pragma solidity ^0.8.0;
-
-
 
 /**
  * @title SafeERC20
@@ -2199,7 +2476,10 @@ library SafeERC20 {
         address to,
         uint256 value
     ) internal {
-        _callOptionalReturn(token, abi.encodeWithSelector(token.transfer.selector, to, value));
+        _callOptionalReturn(
+            token,
+            abi.encodeWithSelector(token.transfer.selector, to, value)
+        );
     }
 
     function safeTransferFrom(
@@ -2208,7 +2488,10 @@ library SafeERC20 {
         address to,
         uint256 value
     ) internal {
-        _callOptionalReturn(token, abi.encodeWithSelector(token.transferFrom.selector, from, to, value));
+        _callOptionalReturn(
+            token,
+            abi.encodeWithSelector(token.transferFrom.selector, from, to, value)
+        );
     }
 
     /**
@@ -2230,7 +2513,10 @@ library SafeERC20 {
             (value == 0) || (token.allowance(address(this), spender) == 0),
             "SafeERC20: approve from non-zero to non-zero allowance"
         );
-        _callOptionalReturn(token, abi.encodeWithSelector(token.approve.selector, spender, value));
+        _callOptionalReturn(
+            token,
+            abi.encodeWithSelector(token.approve.selector, spender, value)
+        );
     }
 
     function safeIncreaseAllowance(
@@ -2239,7 +2525,14 @@ library SafeERC20 {
         uint256 value
     ) internal {
         uint256 newAllowance = token.allowance(address(this), spender) + value;
-        _callOptionalReturn(token, abi.encodeWithSelector(token.approve.selector, spender, newAllowance));
+        _callOptionalReturn(
+            token,
+            abi.encodeWithSelector(
+                token.approve.selector,
+                spender,
+                newAllowance
+            )
+        );
     }
 
     function safeDecreaseAllowance(
@@ -2249,9 +2542,19 @@ library SafeERC20 {
     ) internal {
         unchecked {
             uint256 oldAllowance = token.allowance(address(this), spender);
-            require(oldAllowance >= value, "SafeERC20: decreased allowance below zero");
+            require(
+                oldAllowance >= value,
+                "SafeERC20: decreased allowance below zero"
+            );
             uint256 newAllowance = oldAllowance - value;
-            _callOptionalReturn(token, abi.encodeWithSelector(token.approve.selector, spender, newAllowance));
+            _callOptionalReturn(
+                token,
+                abi.encodeWithSelector(
+                    token.approve.selector,
+                    spender,
+                    newAllowance
+                )
+            );
         }
     }
 
@@ -2268,7 +2571,10 @@ library SafeERC20 {
         uint256 nonceBefore = token.nonces(owner);
         token.permit(owner, spender, value, deadline, v, r, s);
         uint256 nonceAfter = token.nonces(owner);
-        require(nonceAfter == nonceBefore + 1, "SafeERC20: permit did not succeed");
+        require(
+            nonceAfter == nonceBefore + 1,
+            "SafeERC20: permit did not succeed"
+        );
     }
 
     /**
@@ -2282,17 +2588,21 @@ library SafeERC20 {
         // we're implementing it ourselves. We use {Address-functionCall} to perform this call, which verifies that
         // the target address contains contract code and also asserts for success in the low-level call.
 
-        bytes memory returndata = address(token).functionCall(data, "SafeERC20: low-level call failed");
+        bytes memory returndata = address(token).functionCall(
+            data,
+            "SafeERC20: low-level call failed"
+        );
         if (returndata.length > 0) {
             // Return data is optional
-            require(abi.decode(returndata, (bool)), "SafeERC20: ERC20 operation did not succeed");
+            require(
+                abi.decode(returndata, (bool)),
+                "SafeERC20: ERC20 operation did not succeed"
+            );
         }
     }
 }
 
-
 // File @openzeppelin/contracts/utils/introspection/IERC165.sol@v4.8.0
-
 
 // OpenZeppelin Contracts v4.4.1 (utils/introspection/IERC165.sol)
 
@@ -2319,9 +2629,7 @@ interface IERC165 {
     function supportsInterface(bytes4 interfaceId) external view returns (bool);
 }
 
-
 // File @openzeppelin/contracts/token/ERC721/IERC721.sol@v4.8.0
-
 
 // OpenZeppelin Contracts (last updated v4.8.0) (token/ERC721/IERC721.sol)
 
@@ -2334,17 +2642,29 @@ interface IERC721 is IERC165 {
     /**
      * @dev Emitted when `tokenId` token is transferred from `from` to `to`.
      */
-    event Transfer(address indexed from, address indexed to, uint256 indexed tokenId);
+    event Transfer(
+        address indexed from,
+        address indexed to,
+        uint256 indexed tokenId
+    );
 
     /**
      * @dev Emitted when `owner` enables `approved` to manage the `tokenId` token.
      */
-    event Approval(address indexed owner, address indexed approved, uint256 indexed tokenId);
+    event Approval(
+        address indexed owner,
+        address indexed approved,
+        uint256 indexed tokenId
+    );
 
     /**
      * @dev Emitted when `owner` enables or disables (`approved`) `operator` to manage all of its assets.
      */
-    event ApprovalForAll(address indexed owner, address indexed operator, bool approved);
+    event ApprovalForAll(
+        address indexed owner,
+        address indexed operator,
+        bool approved
+    );
 
     /**
      * @dev Returns the number of tokens in ``owner``'s account.
@@ -2456,37 +2776,38 @@ interface IERC721 is IERC165 {
      *
      * - `tokenId` must exist.
      */
-    function getApproved(uint256 tokenId) external view returns (address operator);
+    function getApproved(uint256 tokenId)
+        external
+        view
+        returns (address operator);
 
     /**
      * @dev Returns if the `operator` is allowed to manage all of the assets of `owner`.
      *
      * See {setApprovalForAll}
      */
-    function isApprovedForAll(address owner, address operator) external view returns (bool);
+    function isApprovedForAll(address owner, address operator)
+        external
+        view
+        returns (bool);
 }
 
-
 // File contracts/IERC721UUPS.sol
-
 
 pragma solidity ^0.8.0;
 
 interface IERC721UUPS is IERC721 {
-    function fee() external view returns (uint);
+    function fee() external view returns (uint256);
+
     function owner() external view returns (address);
-
 }
-
 
 // File contracts/IMarket.sol
 
-
 pragma solidity ^0.8.2;
 
-interface IMarket{
-    
- struct TokenPrice {
+interface IMarket {
+    struct TokenPrice {
         string symbol;
         uint256 price;
     }
@@ -2506,7 +2827,7 @@ interface IMarket{
         uint256 quantity;
         address NFTAddress;
         uint256[] tokenID;
-        uint currentIndex;
+        uint256 currentIndex;
         uint256 ethPrice;
         uint256 tokenPrices;
         uint256 orderId;
@@ -2515,28 +2836,27 @@ interface IMarket{
     struct Auction {
         address NFTAddress;
         uint256 tokenId;
-        uint startTime;
-        uint endTime;
-        uint initPrice;
-        uint currentPrice;
+        uint256 startTime;
+        uint256 endTime;
+        uint256 initPrice;
+        uint256 currentPrice;
         bool byToken;
         address bestBidder;
         address seller;
-        uint orderId;
+        uint256 orderId;
         bool _isInfinity;
         bool finish;
-        
     }
 
     event Ask(
         address seller,
         uint256 order,
-        address NFTAddress,        
+        address NFTAddress,
         uint256 ethPrice,
         TokenPrice[] indexed tokenPrices,
-		uint256 fee
+        uint256 fee
     );
-  event Trade(
+    event Trade(
         address indexed seller,
         address indexed buyer,
         uint256 tokenId,
@@ -2552,455 +2872,462 @@ interface IMarket{
         address indexed newOwner
     );
 
-	event SetMakerFeePercent(address indexed setBy, uint256 oldFeePercent, uint256 newFeePercent);
+    event SetMakerFeePercent(
+        address indexed setBy,
+        uint256 oldFeePercent,
+        uint256 newFeePercent
+    );
 
-    event SetTakerFeeFeePercent(address indexed setBy, uint256 oldFeePercent, uint256 newFeePercent);
+    event SetTakerFeeFeePercent(
+        address indexed setBy,
+        uint256 oldFeePercent,
+        uint256 newFeePercent
+    );
 
     event setPrices(
         address indexed seller,
         uint256 indexed order,
         uint256 ethPrice,
         TokenPrice[] indexed tokenPrices
-    );   
-    
-
+    );
 }
-
 
 // File contracts/AuctionV2.sol
 
-
 pragma solidity ^0.8.0;
-
-
-
-
-
-
-
-
 
 //create a auction contract
 contract AuctionV2 is ERC721Holder, Ownable, Pausable, IMarket {
-  using SafeMath for uint256;
-  using EnumerableSet for EnumerableSet.UintSet;
-  using EnumerableMap for EnumerableMap.UintToAddressMap;
-  using Address for address;
+    using SafeMath for uint256;
+    using EnumerableSet for EnumerableSet.UintSet;
+    using EnumerableMap for EnumerableMap.UintToAddressMap;
+    using Address for address;
 
-  event AuctionCreated(
-    address indexed seller,
-    uint256 id,
-    uint256 _tokenId,
-    uint256 _price,
-    uint256 _duration
-  );
-  event BidPlaced(address indexed bidder, uint256 id, uint256 _price);
-  event IncrementBid(
-    address indexed bidder,
-    uint256 id,
-    uint256 value,
-    uint256 newPrice
-  );
-  event AuctionFinished(
-    address indexed seller,
-    address indexed winner,
-    uint256 id,
-    uint256 _tokenId,
-    uint256 _price
-  );
-
-  uint256 public currentOrder;
-  uint256 public constant MMINIMAL_DURATION = 60; //hours;
-  uint256 public constant MAXIMAL_DURATION = 600; // days;
-  mapping(address => EnumerableSet.UintSet) private _userSellingAuction;
-  mapping(address => EnumerableSet.UintSet) private _userBuyingAuction;
-  EnumerableSet.UintSet private activeAuctions;
-
-  uint256 public PERCENT_DIVIDER = 10000;
-  IERC20 token;
-  mapping(uint256 => Auction) public auctions;
-  // a fee of 1 equals 0.1%, 10 to 1%, 100 to 10%, 1000 to 100%
-  address payable public feeAddr;
-  uint256 public takerFee;
-  uint256 public constant PERCENTS_DIVIDER = 1000;
-
-  constructor(address _token) {
-    require(_token.isContract(), "token address is not a contract");
-    token = IERC20(_token);
-    feeAddr = payable(msg.sender);
-    takerFee = 10;
-  }
-
-  function setFeeTakerFee(uint256 _takerPercent) external onlyOwner {
-    require(takerFee != _takerPercent, "Not need update");
-    require(
-      _takerPercent <= PERCENTS_DIVIDER,
-      "Taker percent must be less than 10000"
+    event AuctionCreated(
+        address indexed seller,
+        uint256 id,
+        uint256 _tokenId,
+        uint256 _price,
+        uint256 _duration
     );
-    emit SetTakerFeeFeePercent(_msgSender(), takerFee, _takerPercent);
-    takerFee = _takerPercent;
-  }
-
-  function transferFeeAddress(address _feeAddr) external onlyOwner {
-    require(_feeAddr != feeAddr, "Not need update");
-    feeAddr = payable(_feeAddr);
-    emit FeeAddressTransferred(_msgSender(), feeAddr);
-  }
-
-  function createAuction(
-    address nft,
-    uint256[] memory _tokenId,
-    uint256 _price,
-    uint256 _duration,
-    bool _byToken,
-    bool _isInfinity
-  ) internal {
-    for (uint256 i; i < _tokenId.length; i++) {      
-      currentOrder++;
-      Auction storage auction = auctions[currentOrder];
-      auction.tokenId = _tokenId[i];
-      auction.startTime = block.timestamp.add(_duration.mul(i));
-      auction.endTime = auction.startTime.add(_duration);
-      auction.currentPrice = _price;
-      auction.initPrice = _price;
-      auction.seller = msg.sender;
-      auction.orderId = currentOrder;
-      auction.byToken = _byToken;
-      auction.NFTAddress = nft;
-      auction._isInfinity = _isInfinity;
-      _userSellingAuction[msg.sender].add(currentOrder);
-      activeAuctions.add(currentOrder);
-
-      IERC721(nft).safeTransferFrom(
-        msg.sender,
-        address(this),
-        _tokenId[i],
-        "0x"
-      );
-
-      emit AuctionCreated(
-        msg.sender,
-        currentOrder,
-        _tokenId[i],
-        _price,
-        _duration
-      );
-    }
-  }
-
-  function createAuctionSingle
-  (
-    address nft,
-    uint256[] memory _tokenId,
-    uint256 _price,
-    uint256 _duration,
-    bool _byToken
-  ) external {
-      require(
-        _duration >= MMINIMAL_DURATION,
-        "Duration must be greater than MMINIMAL_DURATION"
-      );
-      require(
-        _duration <= MAXIMAL_DURATION,
-        "Duration must be less than MAXIMAL_DURATION"
-      ); 
-    createAuction(nft, _tokenId, _price, _duration, _byToken, false);
-  }
-
-  function createAuctionTimeLong(
-    address nft,
-    uint256[] memory _tokenId,
-    uint256 _price,
-    bool _byToken
-  ) external {
-    createAuction(nft, _tokenId, _price, 0, _byToken, true);
-  }
-
-  function bid(uint256 _order, uint256 _tokenAmount) external payable {
-    require(auctionIsActive(_order), "Auction is not active");
-    require(!auctionIsOver(_order), "Auction is over");
-    require(auctionStarted(_order), "Auction is not started");
-    Auction storage auction = auctions[_order];
-    bool byToken = auction.byToken;
-    if (auction.bestBidder != address(0)) {
-      if (!byToken) {
-        payable(auction.bestBidder).transfer(auction.currentPrice);
-      } else {
-        token.transfer(auction.bestBidder, auction.currentPrice);
-      }
-      _userBuyingAuction[auction.bestBidder].remove(_order);
-    }
-
-    if (byToken) {
-      require(msg.value == 0, "Bid must be equal to current price");
-      require(
-        _tokenAmount > auction.currentPrice,
-        "Bid must be greater than current price Token"
-      );
-      token.transferFrom(msg.sender, address(this), _tokenAmount);
-    } else {
-      require(
-        msg.value > auction.currentPrice,
-        "Bid must be greater than current price BASE"
-      );
-      _tokenAmount = msg.value;
-    }
-
-    auction.bestBidder = msg.sender;
-    auction.currentPrice = _tokenAmount;
-    _userBuyingAuction[msg.sender].add(_order);
-    emit BidPlaced(msg.sender, _order, msg.value);
-  }
-
-  function finishAuction(uint256 _order) external {
-    require(auctionIsActive(_order), "Auction is not active");
-    require(auctionIsOver(_order), "Auction is not over");
-    require(auctionStarted(_order), "Auction is not started");
-    Auction storage auction = auctions[_order];
-    bool canFinish = false;
-    if (_userSellingAuction[msg.sender].contains(_order)) {
-      canFinish = true;
-    } else {
-      if (auction.bestBidder == msg.sender) {
-        canFinish = true;
-      }
-    }
-    require(canFinish, "You can't finish this auction");
-    if (auction.bestBidder == address(0))
-      IERC721(auction.NFTAddress).safeTransferFrom(
-        address(this),
-        auction.seller,
-        auction.tokenId
-      );
-    else {
-      IERC721(auction.NFTAddress).safeTransferFrom(
-        address(this),
-        auction.bestBidder,
-        auction.tokenId,
-        "0x"
-      );
-      _userBuyingAuction[auction.bestBidder].remove(_order);
-      payFees(auction.seller, auction.currentPrice,0, auction.byToken);
-    }
-    auction.finish = true;
-    _userSellingAuction[auction.seller].remove(_order);
-    activeAuctions.remove(_order);
-    emit AuctionFinished(
-      auction.seller,
-      auction.bestBidder,
-      _order,
-      auction.tokenId,
-      auction.currentPrice
+    event BidPlaced(address indexed bidder, uint256 id, uint256 _price);
+    event IncrementBid(
+        address indexed bidder,
+        uint256 id,
+        uint256 value,
+        uint256 newPrice
     );
-  }
-
-  function acepOffert(uint256 _order) external {
-    require(auctionIsActive(_order), "Auction is not active");    
-    require(auctionStarted(_order), "Auction is not started");
-    require(
-      _userSellingAuction[msg.sender].contains(_order),
-      "You can't accept this offer"
-    );
-    Auction storage auction = auctions[_order];
-    require(auction.bestBidder != address(0), "You can't accept this offer");
-    IERC721(auction.NFTAddress).safeTransferFrom(
-      address(this),
-      auction.bestBidder,
-      auction.tokenId,
-      "0x"
+    event AuctionFinished(
+        address indexed seller,
+        address indexed winner,
+        uint256 id,
+        uint256 _tokenId,
+        uint256 _price
     );
 
+    uint256 public currentOrder;
+    uint256 public constant MMINIMAL_DURATION = 60; //hours;
+    uint256 public constant MAXIMAL_DURATION = 600; // days;
+    mapping(address => EnumerableSet.UintSet) private _userSellingAuction;
+    mapping(address => EnumerableSet.UintSet) private _userBuyingAuction;
+    EnumerableSet.UintSet private activeAuctions;
 
-    uint artFees = payArtFees(auction.NFTAddress, auction.currentPrice, auction.byToken);
-    payFees(auction.seller, auction.currentPrice,artFees,auction.byToken);
-    _userBuyingAuction[auction.bestBidder].remove(_order);
-    _userSellingAuction[auction.seller].remove(_order);
-    activeAuctions.remove(_order);
-    emit AuctionFinished(
-      auction.seller,
-      auction.bestBidder,
-      _order,
-      auction.tokenId,
-      auction.currentPrice
-    );
-  }
+    uint256 public PERCENT_DIVIDER = 10000;
+    IERC20 token;
+    mapping(uint256 => Auction) public auctions;
+    // a fee of 1 equals 0.1%, 10 to 1%, 100 to 10%, 1000 to 100%
+    address payable public feeAddr;
+    uint256 public takerFee;
+    uint256 public constant PERCENTS_DIVIDER = 1000;
 
-  function removeOffer(uint256 _order) external {
-    require(auctionIsActive(_order), "Auction is not active");
-    Auction storage auction = auctions[_order];
-
-    require(
-      _userSellingAuction[msg.sender].contains(_order),
-      "You can't remove this offer"
-    );
-    IERC721(auction.NFTAddress).safeTransferFrom(
-      address(this),
-      auction.seller,
-      auction.tokenId,
-      "0x"
-    );
-    if (auction.bestBidder != address(0)) {
-      if (!auction.byToken) {
-        payable(auction.bestBidder).transfer(auction.currentPrice);
-      } else {
-        token.transfer(auction.bestBidder, auction.currentPrice);
-      }
-      _userBuyingAuction[auction.bestBidder].remove(_order);
+    constructor(address _token) {
+        require(_token.isContract(), "token address is not a contract");
+        token = IERC20(_token);
+        feeAddr = payable(msg.sender);
+        takerFee = 10;
     }
-    _userSellingAuction[auction.seller].remove(_order);
-    activeAuctions.remove(_order);
-  }
 
-  function removeBit(uint256 _order) external {
-    require(auctionIsActive(_order), "Auction is not active");
-    Auction storage auction = auctions[_order];
-    require(auction.bestBidder == msg.sender, "You can't remove this offer");
-    require(auction._isInfinity, "anybody can remove this offer");
-    require(_userBuyingAuction[msg.sender].contains(_order),"You can't remove this offer");
-    if (!auction.byToken) {
-        payable(auction.bestBidder).transfer(auction.currentPrice);
-      } else {
-        token.transfer(auction.bestBidder, auction.currentPrice);
+    function setFeeTakerFee(uint256 _takerPercent) external onlyOwner {
+        require(takerFee != _takerPercent, "Not need update");
+        require(
+            _takerPercent <= PERCENTS_DIVIDER,
+            "Taker percent must be less than 10000"
+        );
+        emit SetTakerFeeFeePercent(_msgSender(), takerFee, _takerPercent);
+        takerFee = _takerPercent;
     }
-    auction.bestBidder = address(0);
-    _userBuyingAuction[msg.sender].remove(_order);
-    auction.currentPrice = auction.initPrice;
-  }
 
-  function auctionStarted(uint256 _order) public view returns (bool) {
-    Auction storage auction = auctions[_order];
-    return block.timestamp >= auction.startTime;
-  }
-
-  function auctionIsOver(uint256 _order) public view returns (bool) {
-    Auction storage auction = auctions[_order];
-    if (auction._isInfinity) {
-      return false;
+    function transferFeeAddress(address _feeAddr) external onlyOwner {
+        require(_feeAddr != feeAddr, "Not need update");
+        feeAddr = payable(_feeAddr);
+        emit FeeAddressTransferred(_msgSender(), feeAddr);
     }
-    return block.timestamp > auction.endTime;
-  }
 
-  function auctionIsActive(uint256 _order) public view returns (bool) {
-    return activeAuctions.contains(_order);
-  }
+    function createAuction(
+        address nft,
+        uint256[] memory _tokenId,
+        uint256 _price,
+        uint256 _duration,
+        bool _byToken,
+        bool _isInfinity
+    ) internal {
+        for (uint256 i; i < _tokenId.length; i++) {
+            currentOrder++;
+            Auction storage auction = auctions[currentOrder];
+            auction.tokenId = _tokenId[i];
+            auction.startTime = block.timestamp.add(_duration.mul(i));
+            auction.endTime = auction.startTime.add(_duration);
+            auction.currentPrice = _price;
+            auction.initPrice = _price;
+            auction.seller = msg.sender;
+            auction.orderId = currentOrder;
+            auction.byToken = _byToken;
+            auction.NFTAddress = nft;
+            auction._isInfinity = _isInfinity;
+            _userSellingAuction[msg.sender].add(currentOrder);
+            activeAuctions.add(currentOrder);
 
-  function auctionIsInfinity(uint256 _order) public view returns (bool) {
-    Auction storage auction = auctions[_order];
-    return auction._isInfinity;
-  }
+            IERC721(nft).safeTransferFrom(
+                msg.sender,
+                address(this),
+                _tokenId[i],
+                "0x"
+            );
 
-  function payFees(
-    address receiver,
-    uint256 _amount,
-    uint _artFees,
-    bool byToken
-  ) internal {
-    require(feeAddr != address(0), "Fee address is not set");
-    uint256 fee = _amount.mul(takerFee).div(PERCENTS_DIVIDER);
-    uint256 toReceiver = _amount.sub(fee).sub(_artFees);
-    if (byToken) {
-      token.transfer(feeAddr, fee);
-      token.transfer(receiver, toReceiver);
-    } else {
-      payable(feeAddr).transfer(fee);
-      payable(receiver).transfer(toReceiver);
+            emit AuctionCreated(
+                msg.sender,
+                currentOrder,
+                _tokenId[i],
+                _price,
+                _duration
+            );
+        }
     }
-  }
-function payArtFees(    
-    address nftAddress,
-    uint256 _amount,
-    bool byToken
-  ) internal returns(uint) {    
-    IERC721UUPS currentNFT = IERC721UUPS(nftAddress);
-    uint artFee = _amount.mul(currentNFT.fee()).div(PERCENTS_DIVIDER);
-    address artaddress = currentNFT.owner();
-    if (byToken) {      
-      token.transfer(artaddress, artFee);
-    } else {      
-      payable(artaddress).transfer(artFee);
+
+    function createAuctionSingle(
+        address nft,
+        uint256[] memory _tokenId,
+        uint256 _price,
+        uint256 _duration,
+        bool _byToken
+    ) external {
+        require(
+            _duration >= MMINIMAL_DURATION,
+            "Duration must be greater than MMINIMAL_DURATION"
+        );
+        require(
+            _duration <= MAXIMAL_DURATION,
+            "Duration must be less than MAXIMAL_DURATION"
+        );
+        createAuction(nft, _tokenId, _price, _duration, _byToken, false);
     }
-    return artFee;
-  }
 
-
-   
-   
-
-  function getAllSellerOrdersUser(address seller)
-    public
-    view
-    returns (uint256[] memory)
-  {
-    uint256[] memory result = new uint256[](
-      _userSellingAuction[seller].length()
-    );
-    for (uint256 i = 0; i < _userSellingAuction[seller].length(); i++) {
-      result[i] = _userSellingAuction[seller].at(i);
+    function createAuctionTimeLong(
+        address nft,
+        uint256[] memory _tokenId,
+        uint256 _price,
+        bool _byToken
+    ) external {
+        createAuction(nft, _tokenId, _price, 0, _byToken, true);
     }
-    return result;
-  }
 
-  function getSellerOrderLength(address seller) public view returns (uint256) {
-    return _userSellingAuction[seller].length();
-  }
+    function bid(uint256 _order, uint256 _tokenAmount) external payable {
+        require(auctionIsActive(_order), "Auction is not active");
+        require(!auctionIsOver(_order), "Auction is over");
+        require(auctionStarted(_order), "Auction is not started");
+        Auction storage auction = auctions[_order];
+        bool byToken = auction.byToken;
+        if (auction.bestBidder != address(0)) {
+            if (!byToken) {
+                payable(auction.bestBidder).transfer(auction.currentPrice);
+            } else {
+                token.transfer(auction.bestBidder, auction.currentPrice);
+            }
+            _userBuyingAuction[auction.bestBidder].remove(_order);
+        }
 
+        if (byToken) {
+            require(msg.value == 0, "Bid must be equal to current price");
+            require(
+                _tokenAmount > auction.currentPrice,
+                "Bid must be greater than price"
+            );
+            token.transferFrom(msg.sender, address(this), _tokenAmount);
+        } else {
+            require(
+                msg.value > auction.currentPrice,
+                "Bid must be greater than base"
+            );
+            _tokenAmount = msg.value;
+        }
 
-  function getSellerOrderUserByIndex(address seller, uint256 index)
-    public
-    view
-    returns (uint256)
-  {
-    return _userSellingAuction[seller].at(index);
-  }
-
-  function getAllBuyerOrdersUser(address buyer)
-    public
-    view
-    returns (uint256[] memory)
-  {
-    uint256[] memory result = new uint256[](_userBuyingAuction[buyer].length());
-    for (uint256 i = 0; i < _userBuyingAuction[buyer].length(); i++) {
-      result[i] = _userBuyingAuction[buyer].at(i);
+        auction.bestBidder = msg.sender;
+        auction.currentPrice = _tokenAmount;
+        _userBuyingAuction[msg.sender].add(_order);
+        emit BidPlaced(msg.sender, _order, msg.value);
     }
-    return result;
-  }
 
-function getBuyerOrderLength(address buyer) public view returns (uint256) {
-    return _userBuyingAuction[buyer].length();
-  }
-
-  function getBuyerOrderUserByIndex(address buyer, uint256 index)
-    public
-    view
-    returns (uint256)
-  {
-    return _userBuyingAuction[buyer].at(index);
-  }
-
-  function getAllAuctionsID() public view returns (uint256[] memory) {
-    uint256[] memory result = new uint256[](activeAuctions.length());
-    for (uint256 i = 0; i < activeAuctions.length(); i++) {
-      result[i] = activeAuctions.at(i);
+    function finishAuction(uint256 _order) external {
+        require(auctionIsActive(_order), "Auction is not active");
+        require(auctionIsOver(_order), "Auction is not over");
+        require(auctionStarted(_order), "Auction is not started");
+        Auction storage auction = auctions[_order];
+        bool canFinish = false;
+        if (_userSellingAuction[msg.sender].contains(_order)) {
+            canFinish = true;
+        } else {
+            if (auction.bestBidder == msg.sender) {
+                canFinish = true;
+            }
+        }
+        require(canFinish, "You can't finish this auction");
+        if (auction.bestBidder == address(0))
+            IERC721(auction.NFTAddress).safeTransferFrom(
+                address(this),
+                auction.seller,
+                auction.tokenId
+            );
+        else {
+            IERC721(auction.NFTAddress).safeTransferFrom(
+                address(this),
+                auction.bestBidder,
+                auction.tokenId,
+                "0x"
+            );
+            _userBuyingAuction[auction.bestBidder].remove(_order);
+            payFees(auction.seller, auction.currentPrice, 0, auction.byToken);
+        }
+        auction.finish = true;
+        _userSellingAuction[auction.seller].remove(_order);
+        activeAuctions.remove(_order);
+        emit AuctionFinished(
+            auction.seller,
+            auction.bestBidder,
+            _order,
+            auction.tokenId,
+            auction.currentPrice
+        );
     }
-    return result;
-  }
 
-  function getAllAuctions() public view returns (Auction[] memory) {
-    Auction[] memory result = new Auction[](activeAuctions.length());
-    for (uint256 i = 0; i < activeAuctions.length(); i++) {
-      uint rest = activeAuctions.at(i);
-      result[i]=auctions[rest];
+    function acepOffert(uint256 _order) external {
+        require(auctionIsActive(_order), "Auction is not active");
+        require(auctionStarted(_order), "Auction is not started");
+        require(
+            _userSellingAuction[msg.sender].contains(_order),
+            "You can't accept this offer"
+        );
+        Auction storage auction = auctions[_order];
+        require(
+            auction.bestBidder != address(0),
+            "You can't accept this offer"
+        );
+        IERC721(auction.NFTAddress).safeTransferFrom(
+            address(this),
+            auction.bestBidder,
+            auction.tokenId,
+            "0x"
+        );
+
+        uint256 artFees = payArtFees(
+            auction.NFTAddress,
+            auction.currentPrice,
+            auction.byToken
+        );
+        payFees(auction.seller, auction.currentPrice, artFees, auction.byToken);
+        _userBuyingAuction[auction.bestBidder].remove(_order);
+        _userSellingAuction[auction.seller].remove(_order);
+        activeAuctions.remove(_order);
+        emit AuctionFinished(
+            auction.seller,
+            auction.bestBidder,
+            _order,
+            auction.tokenId,
+            auction.currentPrice
+        );
     }
-    return result;
-  }
-  
-  function getAuctionLength() public view returns (uint256) {
-    return activeAuctions.length();
-  }
 
-  function getAuctionByIndex(uint256 index) public view returns (uint256) {
-    return activeAuctions.at(index);
-  }
+    function removeOffer(uint256 _order) external {
+        require(auctionIsActive(_order), "Auction is not active");
+        Auction storage auction = auctions[_order];
 
-  
+        require(
+            _userSellingAuction[msg.sender].contains(_order),
+            "You can't remove this offer"
+        );
+        IERC721(auction.NFTAddress).safeTransferFrom(
+            address(this),
+            auction.seller,
+            auction.tokenId,
+            "0x"
+        );
+        if (auction.bestBidder != address(0)) {
+            if (!auction.byToken) {
+                payable(auction.bestBidder).transfer(auction.currentPrice);
+            } else {
+                token.transfer(auction.bestBidder, auction.currentPrice);
+            }
+            _userBuyingAuction[auction.bestBidder].remove(_order);
+        }
+        _userSellingAuction[auction.seller].remove(_order);
+        activeAuctions.remove(_order);
+    }
+
+    function removeBit(uint256 _order) external {
+        require(auctionIsActive(_order), "Auction is not active");
+        Auction storage auction = auctions[_order];
+        require(
+            auction.bestBidder == msg.sender,
+            "You can't remove this offer"
+        );
+        require(auction._isInfinity, "anybody can remove this offer");
+        require(
+            _userBuyingAuction[msg.sender].contains(_order),
+            "You can't remove this offer"
+        );
+        if (!auction.byToken) {
+            payable(auction.bestBidder).transfer(auction.currentPrice);
+        } else {
+            token.transfer(auction.bestBidder, auction.currentPrice);
+        }
+        auction.bestBidder = address(0);
+        _userBuyingAuction[msg.sender].remove(_order);
+        auction.currentPrice = auction.initPrice;
+    }
+
+    function auctionStarted(uint256 _order) public view returns (bool) {
+        Auction storage auction = auctions[_order];
+        return block.timestamp >= auction.startTime;
+    }
+
+    function auctionIsOver(uint256 _order) public view returns (bool) {
+        Auction storage auction = auctions[_order];
+        if (auction._isInfinity) {
+            return false;
+        }
+        return block.timestamp > auction.endTime;
+    }
+
+    function auctionIsActive(uint256 _order) public view returns (bool) {
+        return activeAuctions.contains(_order);
+    }
+
+    function auctionIsInfinity(uint256 _order) public view returns (bool) {
+        Auction storage auction = auctions[_order];
+        return auction._isInfinity;
+    }
+
+    function payFees(
+        address receiver,
+        uint256 _amount,
+        uint256 _artFees,
+        bool byToken
+    ) internal {
+        require(feeAddr != address(0), "Fee address is not set");
+        uint256 fee = _amount.mul(takerFee).div(PERCENTS_DIVIDER);
+        uint256 toReceiver = _amount.sub(fee).sub(_artFees);
+        if (byToken) {
+            token.transfer(feeAddr, fee);
+            token.transfer(receiver, toReceiver);
+        } else {
+            payable(feeAddr).transfer(fee);
+            payable(receiver).transfer(toReceiver);
+        }
+    }
+
+    function payArtFees(
+        address nftAddress,
+        uint256 _amount,
+        bool byToken
+    ) internal returns (uint256) {
+        IERC721UUPS currentNFT = IERC721UUPS(nftAddress);
+        uint256 artFee = _amount.mul(currentNFT.fee()).div(PERCENTS_DIVIDER);
+        address artaddress = currentNFT.owner();
+        if (byToken) {
+            token.transfer(artaddress, artFee);
+        } else {
+            payable(artaddress).transfer(artFee);
+        }
+        return artFee;
+    }
+
+    function getAllSellerOrdersUser(address seller)
+        public
+        view
+        returns (uint256[] memory)
+    {
+        uint256[] memory result = new uint256[](
+            _userSellingAuction[seller].length()
+        );
+        for (uint256 i = 0; i < _userSellingAuction[seller].length(); i++) {
+            result[i] = _userSellingAuction[seller].at(i);
+        }
+        return result;
+    }
+
+    function getSellerOrderLength(address seller)
+        public
+        view
+        returns (uint256)
+    {
+        return _userSellingAuction[seller].length();
+    }
+
+    function getSellerOrderUserByIndex(address seller, uint256 index)
+        public
+        view
+        returns (uint256)
+    {
+        return _userSellingAuction[seller].at(index);
+    }
+
+    function getAllBuyerOrdersUser(address buyer)
+        public
+        view
+        returns (uint256[] memory)
+    {
+        uint256[] memory result = new uint256[](
+            _userBuyingAuction[buyer].length()
+        );
+        for (uint256 i = 0; i < _userBuyingAuction[buyer].length(); i++) {
+            result[i] = _userBuyingAuction[buyer].at(i);
+        }
+        return result;
+    }
+
+    function getBuyerOrderLength(address buyer) public view returns (uint256) {
+        return _userBuyingAuction[buyer].length();
+    }
+
+    function getBuyerOrderUserByIndex(address buyer, uint256 index)
+        public
+        view
+        returns (uint256)
+    {
+        return _userBuyingAuction[buyer].at(index);
+    }
+
+    function getAllAuctionsID() public view returns (uint256[] memory) {
+        uint256[] memory result = new uint256[](activeAuctions.length());
+        for (uint256 i = 0; i < activeAuctions.length(); i++) {
+            result[i] = activeAuctions.at(i);
+        }
+        return result;
+    }
+
+    function getAllAuctions() public view returns (Auction[] memory) {
+        Auction[] memory result = new Auction[](activeAuctions.length());
+        for (uint256 i = 0; i < activeAuctions.length(); i++) {
+            uint256 rest = activeAuctions.at(i);
+            result[i] = auctions[rest];
+        }
+        return result;
+    }
+
+    function getAuctionLength() public view returns (uint256) {
+        return activeAuctions.length();
+    }
+
+    function getAuctionByIndex(uint256 index) public view returns (uint256) {
+        return activeAuctions.at(index);
+    }
 }

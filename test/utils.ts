@@ -77,9 +77,9 @@ export async function setupEnvironment(owner) {
   const erc20 = await ERC20.connect(owner).deploy();
   await erc20.deployed();
 
-  const MArket = await ethers.getContractFactory("Market");
-  const Market = await MArket.connect(owner).deploy(erc20.address);
-  await Market.deployed();
+  const Market = await ethers.getContractFactory("Market");
+  const market = await Market.connect(owner).deploy(erc20.address);
+  await market.deployed();
 
   const AuctionV2 = await ethers.getContractFactory("AuctionV2");
   const auctionv2 = await AuctionV2.connect(owner).deploy(erc20.address);
@@ -87,7 +87,7 @@ export async function setupEnvironment(owner) {
 
   return {
     ercuups721,
-    Market,
+    market,
     erc20,
     auctionv2,
   };
