@@ -83,13 +83,13 @@ contract AuctionV2 is ERC721Holder, Ownable, Pausable, IMarket {
 
     function createAuction(
         address nft,
-        uint256[] memory _tokenId,
+        uint256[] calldata _tokenId,
         uint256 _price,
         uint256 _duration,
         bool _byToken,
         bool _isInfinity
     ) internal {
-        for (uint256 i; i < _tokenId.length; i++) {
+        for (uint256 i; i < _tokenId.length; ) {
             currentOrder++;
             Auction storage auction = auctions[currentOrder];
             auction.tokenId = _tokenId[i];
@@ -119,12 +119,15 @@ contract AuctionV2 is ERC721Holder, Ownable, Pausable, IMarket {
                 _price,
                 _duration
             );
+            unchecked {
+                i++;
+            }
         }
     }
 
     function createAuctionSingle(
         address nft,
-        uint256[] memory _tokenId,
+        uint256[] calldata _tokenId,
         uint256 _price,
         uint256 _duration,
         bool _byToken
@@ -139,7 +142,7 @@ contract AuctionV2 is ERC721Holder, Ownable, Pausable, IMarket {
 
     function createAuctionTimeLong(
         address nft,
-        uint256[] memory _tokenId,
+        uint256[] calldata _tokenId,
         uint256 _price,
         bool _byToken
     ) external {
@@ -373,8 +376,12 @@ contract AuctionV2 is ERC721Holder, Ownable, Pausable, IMarket {
         uint256[] memory result = new uint256[](
             _userSellingAuction[seller].length()
         );
-        for (uint256 i = 0; i < _userSellingAuction[seller].length(); i++) {
+        for (uint256 i = 0; i < _userSellingAuction[seller].length(); ) {
             result[i] = _userSellingAuction[seller].at(i);
+
+            unchecked {
+                i++;
+            }
         }
         return result;
     }
@@ -403,8 +410,11 @@ contract AuctionV2 is ERC721Holder, Ownable, Pausable, IMarket {
         uint256[] memory result = new uint256[](
             _userBuyingAuction[buyer].length()
         );
-        for (uint256 i = 0; i < _userBuyingAuction[buyer].length(); i++) {
+        for (uint256 i = 0; i < _userBuyingAuction[buyer].length(); ) {
             result[i] = _userBuyingAuction[buyer].at(i);
+            unchecked {
+                i++;
+            }
         }
         return result;
     }
@@ -423,17 +433,23 @@ contract AuctionV2 is ERC721Holder, Ownable, Pausable, IMarket {
 
     function getAllAuctionsID() public view returns (uint256[] memory) {
         uint256[] memory result = new uint256[](activeAuctions.length());
-        for (uint256 i = 0; i < activeAuctions.length(); i++) {
+        for (uint256 i = 0; i < activeAuctions.length(); ) {
             result[i] = activeAuctions.at(i);
+            unchecked {
+                i++;
+            }
         }
         return result;
     }
 
     function getAllAuctions() public view returns (Auction[] memory) {
         Auction[] memory result = new Auction[](activeAuctions.length());
-        for (uint256 i = 0; i < activeAuctions.length(); i++) {
+        for (uint256 i = 0; i < activeAuctions.length(); ) {
             uint256 rest = activeAuctions.at(i);
             result[i] = auctions[rest];
+            unchecked {
+                i++;
+            }
         }
         return result;
     }

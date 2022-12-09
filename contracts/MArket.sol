@@ -108,13 +108,17 @@ contract Market is ERC721Holder, Ownable, IMarket {
         uint256 deltaQuantity = quantityOrder.sub(_quantity);
 
         uint256 curentIndex = nft_.currentIndex;
-        for (uint256 i; i < _quantity; i++) {
+        for (uint256 i; i < _quantity; ) {
             currentNFT.safeTransferFrom(
                 address(this),
                 _to,
                 nft_.tokenID[curentIndex.add(i)],
                 "0x"
             );
+
+            unchecked {
+                i++;
+            }
         }
         nft_.currentIndex = nft_.currentIndex.add(_quantity);
         if (deltaQuantity == 0) {
@@ -143,13 +147,16 @@ contract Market is ERC721Holder, Ownable, IMarket {
         Order storage order_ = _tokenSellers[_order];
 
         IERC721 currentNFT = IERC721(order_.NFTAddress);
-        for (uint256 i = order_.currentIndex; i < order_.tokenID.length; i++) {
+        for (uint256 i = order_.currentIndex; i < order_.tokenID.length; ) {
             currentNFT.safeTransferFrom(
                 address(this),
                 order_.owner,
                 order_.tokenID[i],
                 "0x"
             );
+            unchecked {
+                i++;
+            }
         }
         _asksMap.remove(_order);
         _userSellingOrder[_msgSender()].remove(_order);
@@ -158,7 +165,7 @@ contract Market is ERC721Holder, Ownable, IMarket {
     }
 
     function readyToSellToken(
-        uint256[] memory _tokenIds,
+        uint256[] calldata _tokenIds,
         uint256 _quantity,
         uint256 ethPrice,
         uint256 _prices,
@@ -175,7 +182,7 @@ contract Market is ERC721Holder, Ownable, IMarket {
     }
 
     function readyToSellTokenTo(
-        uint256[] memory _tokenIds,
+        uint256[] calldata _tokenIds,
         uint256 _quantity,
         uint256 ethPrice,
         uint256 _prices,
@@ -203,7 +210,7 @@ contract Market is ERC721Holder, Ownable, IMarket {
             nft
         );
 
-        for (uint256 i; i < _quantity; i++) {
+        for (uint256 i; i < _quantity; ) {
             require(
                 currentNFT.ownerOf(_tokenIds[i]) == _from,
                 "Only Token Owner can sell token"
@@ -214,13 +221,17 @@ contract Market is ERC721Holder, Ownable, IMarket {
                 _tokenIds[i],
                 "0x"
             );
+
+            unchecked {
+                i++;
+            }
         }
         emit NewOrder(_from, nft, order, _quantity);
     }
 
     function createOrderHandle(
         Order storage nft_,
-        uint256[] memory _tokenId,
+        uint256[] calldata _tokenId,
         uint256 _quantity,
         uint256 currentIndex,
         uint256 ethPrice,
@@ -249,9 +260,12 @@ contract Market is ERC721Holder, Ownable, IMarket {
     function getAsks() external view returns (Order[] memory) {
         Order[] memory asks = new Order[](_asksMap.length());
 
-        for (uint256 i; i < _asksMap.length(); i++) {
+        for (uint256 i; i < _asksMap.length(); ) {
             uint256 orderNum = _asksMap.at(i);
             asks[i] = _tokenSellers[orderNum];
+            unchecked {
+                i++;
+            }
         }
         return asks;
     }
@@ -263,9 +277,12 @@ contract Market is ERC721Holder, Ownable, IMarket {
     {
         Order[] memory asks = new Order[](_userSellingOrder[user].length());
 
-        for (uint256 i; i < _userSellingOrder[user].length(); i++) {
+        for (uint256 i; i < _userSellingOrder[user].length(); ) {
             uint256 orderNum = _userSellingOrder[user].at(i);
             asks[i] = _tokenSellers[orderNum];
+            unchecked {
+                i++;
+            }
         }
         return asks;
     }
